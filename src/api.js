@@ -142,3 +142,64 @@ export async function listConcepts() {
     return [];
   }
 }
+
+/**
+ * Get graph data for visualization
+ */
+export async function getGraphData() {
+  const wikiDir = path.join(__dirname, '..', config.paths.wiki);
+  const summariesDir = path.join(wikiDir, 'summaries');
+  const conceptsDir = path.join(wikiDir, 'concepts');
+
+  const nodes = [];
+  const links = [];
+
+  try {
+    // Get summaries as nodes
+    const summaryFiles = await fs.readdir(summariesDir).catch(() => []);
+    for (const file of summaryFiles) {
+      const id = file.replace('.md', '');
+      nodes.push({
+        id,
+        name: id.replace(/-/g, ' '),
+        type: 'summary'
+      });
+    }
+
+    // Get concepts as nodes and extract links
+    const conceptFiles = await fs.readdir(conceptsDir).catch(() => []);
+    for (const file of conceptFiles) {
+      const id = file.replace('.md', '');
+      const filePath = path.join(conceptsDir, file);
+      const content = await fs.readFile(filePath, 'utf-8');
+
+      // Count backlinks
+      const backlinksMatch = content.match(/## Mentioned In\n([\s\S]*?)(?=\n##|$)/);
+      const backlinks = backlinksMatch ? (backlinksMatch[1].match(/\[\[/g) || []).length : 0;
+
+      nodes.push({
+        id,
+        name: id.replace(/-/g, ' '),
+        type: 'concept',
+        backlinks
+      });
+
+      // Extract links from backlinks
+      if (backlinksMatch) {
+        const linkMatches = backlinksMatch[1].matchAll(/\[\[([^\]]+)\]\]/g);
+        for (const match of linkMatches) {
+          const targetId = match[1];
+          links.push({
+            source: targetId,
+            target: id
+          });
+        }
+      }
+    }
+
+    return { nodes, links };
+  } catch (error) {
+    console.error('Error getting graph data:', error);
+    return { nodes: [], links: [] };
+  }
+}

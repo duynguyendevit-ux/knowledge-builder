@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { Upload, FileText, Brain, Network, Activity } from 'lucide-react'
+import dynamic from 'next/dynamic'
+
+const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), { ssr: false })
 
 export default function Home() {
   const [files, setFiles] = useState<File[]>([])
@@ -12,6 +15,7 @@ export default function Home() {
     concepts: 0,
     connections: 0
   })
+  const [graphData, setGraphData] = useState<{ nodes: any[], links: any[] }>({ nodes: [], links: [] })
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
@@ -27,9 +31,20 @@ export default function Home() {
     }
   }
 
+  const fetchGraphData = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/graph`)
+      const data = await response.json()
+      setGraphData(data)
+    } catch (error) {
+      console.error('Failed to fetch graph data:', error)
+    }
+  }
+
   // Fetch stats on mount
   useEffect(() => {
     fetchStats()
+    fetchGraphData()
   }, [])
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,6 +76,7 @@ export default function Home() {
       // Wait a bit then refresh stats
       setTimeout(() => {
         fetchStats()
+        fetchGraphData()
         setFiles([])
         setProcessing(false)
       }, 3000)
@@ -194,6 +210,17 @@ export default function Home() {
               </button>
             </div>
           )}
+        </div>
+
+        {/* Knowledge Graph */}
+        <div className="mt-12">
+          <div className="flex items-center gap-3 mb-6">
+            <Network className="w-7 h-7 text-[#c2652a]" />
+            <h2 className="text-3xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
+              Knowledge Graph
+            </h2>
+          </div>
+          <KnowledgeGraph nodes={graphData.nodes} links={graphData.links} />
         </div>
 
         {/* Footer */}

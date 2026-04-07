@@ -4,7 +4,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
-import { getStats, listSummaries, listConcepts } from './api.js';
+import { getStats, listSummaries, listConcepts, getGraphData } from './api.js';
 import { processRawFiles } from './process.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -64,6 +64,18 @@ app.get('/api/concepts', async (req, res) => {
   try {
     const concepts = await listConcepts();
     res.json(concepts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/graph - Get graph data for visualization
+ */
+app.get('/api/graph', async (req, res) => {
+  try {
+    const graphData = await getGraphData();
+    res.json(graphData);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
