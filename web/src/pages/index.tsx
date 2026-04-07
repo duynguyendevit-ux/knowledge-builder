@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Upload, FileText, Brain, Network, Activity } from 'lucide-react'
 
 export default function Home() {
@@ -13,6 +13,21 @@ export default function Home() {
     connections: 0
   })
 
+  // Fetch stats on mount
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/stats')
+      const data = await response.json()
+      setStats(data)
+    } catch (error) {
+      console.error('Failed to fetch stats:', error)
+    }
+  }
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFiles(Array.from(e.target.files))
@@ -20,17 +35,35 @@ export default function Home() {
   }
 
   const processFiles = async () => {
+    if (files.length === 0) return
+    
     setProcessing(true)
-    // TODO: Call API to process files
-    setTimeout(() => {
-      setStats({
-        totalFiles: files.length,
-        summaries: files.length,
-        concepts: files.length * 3,
-        connections: files.length * 2
+    
+    try {
+      // Upload files
+      const formData = new FormData()
+      files.forEach(file => formData.append('files', file))
+      
+      await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
       })
+      
+      // Trigger processing
+      await fetch('/api/process', {
+        method: 'POST'
+      })
+      
+      // Wait a bit then refresh stats
+      setTimeout(() => {
+        fetchStats()
+        setFiles([])
+        setProcessing(false)
+      }, 3000)
+    } catch (error) {
+      console.error('Failed to process files:', error)
       setProcessing(false)
-    }, 2000)
+    }
   }
 
   return (

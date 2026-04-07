@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { extractText } from './parser.js';
+import { generateSummary, extractConcepts, findConnections } from './llm.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,89 +75,90 @@ async function processFile(filePath, wikiDir) {
   
   console.log(`📄 Processing: ${fileName}`);
 
-  // Read file content
+  // Extract text from file
   let content;
   try {
-    content = await fs.readFile(filePath, 'utf-8');
+    content = await extractText(filePath);
+    if (!content || content.trim().length === 0) {
+      console.log(`  ⚠️  No content extracted from ${fileName}`);
+      return;
+    }
   } catch (error) {
-    console.log(`⚠️  Could not read file: ${fileName}`);
+    console.log(`  ⚠️  Could not extract text from ${fileName}`);
     return;
   }
 
   // Generate summary
   if (config.processing.autoSummarize) {
-    const summary = await generateSummary(fileName, content);
-    const summaryPath = path.join(wikiDir, 'summaries', `${path.parse(fileName).name}.md`);
-    await fs.writeFile(summaryPath, summary);
-    console.log(`  ✓ Summary created`);
+    try {
+      const summary = await generateSummary(fileName, content);
+      const summaryPath = path.join(wikiDir, 'summaries', `${path.parse(fileName).name}.md`);
+      await fs.writeFile(summaryPath, summary);
+      console.log(`  ✓ Summary created`);
+    } catch (error) {
+      console.log(`  ⚠️  Failed to generate summary: ${error.message}`);
+    }
   }
 
   // Extract concepts
   if (config.processing.extractConcepts) {
-    const concepts = await extractConcepts(content);
-    for (const concept of concepts) {
-      const conceptPath = path.join(wikiDir, 'concepts', `${concept.slug}.md`);
-      await updateConceptPage(conceptPath, concept, fileName);
+    try {
+      const concepts = await extractConcepts(content);
+      for (const concept of concepts) {
+        const conceptPath = path.join(wikiDir, 'concepts', `${concept.slug}.md`);
+        await updateConceptPage(conceptPath, concept, fileName);
+      }
+      console.log(`  ✓ Concepts extracted: ${concepts.length}`);
+    } catch (error) {
+      console.log(`  ⚠️  Failed to extract concepts: ${error.message}`);
     }
-    console.log(`  ✓ Concepts extracted: ${concepts.length}`);
   }
-}
-
-/**
- * Generate summary for a document
- */
-async function generateSummary(fileName, content) {
-  // TODO: Call LLM to generate summary
-  // For now, return a template
-  
-  const summary = `---
-title: ${fileName}
-tags: [summary]
-created: ${new Date().toISOString()}
----
-
-# ${fileName}
-
-## Summary
-
-[Auto-generated summary will go here]
-
-## Key Points
-
-- Point 1
-- Point 2
-- Point 3
-
-## Related Concepts
-
-- [[concept-1]]
-- [[concept-2]]
-
-## Source
-
-\`\`\`
-${content.substring(0, 500)}...
-\`\`\`
-`;
-
-  return summary;
-}
-
-/**
- * Extract concepts from content
- */
-async function extractConcepts(content) {
-  // TODO: Call LLM to extract concepts
-  // For now, return empty array
-  return [];
 }
 
 /**
  * Update concept page with new reference
  */
 async function updateConceptPage(conceptPath, concept, sourceFile) {
-  // TODO: Update or create concept page
-  // Add backlink to source file
+  let content = '';
+  
+  // Check if concept page already exists
+  try {
+    content = await fs.readFile(conceptPath, 'utf-8');
+  } catch (error) {
+    // Create new concept page
+    content = `---
+title: ${concept.name}
+type: concept
+tags: [concept]
+created: ${new Date().toISOString()}
+---
+
+# ${concept.name}
+
+## Definition
+${concept.definition}
+
+## Importance
+${concept.importance}
+
+## Related Concepts
+
+## Mentioned In
+- [[${path.parse(sourceFile).name}]]
+`;
+    await fs.writeFile(conceptPath, content);
+    return;
+  }
+  
+  // Add backlink if not already present
+  const backlink = `- [[${path.parse(sourceFile).name}]]`;
+  if (!content.includes(backlink)) {
+    content = content.replace(
+      '## Mentioned In',
+      `## Mentioned In\n${backlink}`
+    );
+    await fs.writeFile(conceptPath, content);
+  }
 }
 
 // Run if called directly

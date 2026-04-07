@@ -1,8 +1,9 @@
 {
   "llm": {
-    "provider": "openai",
-    "model": "gpt-4",
-    "apiKey": ""
+    "provider": "openrouter",
+    "model": "qwen/qwen3.6-plus:free",
+    "apiKey": "",
+    "baseUrl": "https://openrouter.ai/api/v1"
   },
   "paths": {
     "raw": "./raw",
