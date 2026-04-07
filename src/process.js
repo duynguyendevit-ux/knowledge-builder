@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { extractText } from './parser.js';
 import { generateSummary, extractConcepts, findConnections } from './llm.js';
 import { updateProcessingStatus, addProcessingLog, resetProcessingStatus, getProcessingStatus } from './status.js';
+import { needsProcessing, markProcessed } from './cache.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -98,6 +99,20 @@ async function processFile(filePath, wikiDir) {
   
   console.log(`📄 Processing: ${fileName}`);
 
+  // Check cache
+  const needsUpdate = await needsProcessing(filePath);
+  if (!needsUpdate) {
+    console.log(`  ⏭️  Skipped (unchanged)`);
+    addProcessingLog(`Skipped ${fileName} (unchanged)`);
+    
+    // Still update processed count
+    const status = getProcessingStatus();
+    updateProcessingStatus({
+      processedFiles: (status.processedFiles || 0) + 1
+    });
+    return;
+  }
+
   // Extract text from file
   let content;
   try {
@@ -113,11 +128,14 @@ async function processFile(filePath, wikiDir) {
     return;
   }
 
+  let summary = null;
+  let concepts = [];
+
   // Generate summary
   if (config.processing.autoSummarize) {
     try {
       addProcessingLog(`Generating summary for ${fileName}...`);
-      const summary = await generateSummary(fileName, content);
+      summary = await generateSummary(fileName, content);
       const summaryPath = path.join(wikiDir, 'summaries', `${path.parse(fileName).name}.md`);
       await fs.writeFile(summaryPath, summary);
       console.log(`  ✓ Summary created`);
@@ -132,7 +150,7 @@ async function processFile(filePath, wikiDir) {
   if (config.processing.extractConcepts) {
     try {
       addProcessingLog(`Extracting concepts from ${fileName}...`);
-      const concepts = await extractConcepts(content);
+      concepts = await extractConcepts(content);
       for (const concept of concepts) {
         const conceptPath = path.join(wikiDir, 'concepts', `${concept.slug}.md`);
         await updateConceptPage(conceptPath, concept, fileName);
@@ -144,6 +162,9 @@ async function processFile(filePath, wikiDir) {
       addProcessingLog(`Failed to extract concepts: ${error.message}`);
     }
   }
+  
+  // Mark as processed in cache
+  await markProcessed(filePath, concepts, summary);
   
   // Update processed count
   const status = getProcessingStatus();

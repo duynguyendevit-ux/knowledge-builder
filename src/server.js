@@ -8,6 +8,7 @@ import { getStats, listSummaries, listConcepts, getGraphData } from './api.js';
 import { processRawFiles } from './process.js';
 import { getProcessingStatus } from './status.js';
 import { chatWithKnowledge } from './chat.js';
+import { findPath, queryGraph, explainConcept } from './query.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -106,6 +107,70 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Question is required' });
     }
     
+    // Check for query commands
+    if (question.startsWith('/query ')) {
+      const query = question.substring(7).trim();
+      const answer = await queryGraph(query);
+      return res.json({ answer, type: 'query' });
+    }
+    
+    if (question.startsWith('/path ')) {
+      const parts = question.substring(6).split(' ');
+      if (parts.length < 2) {
+        return res.json({ answer: 'Usage: /path "NodeA" "NodeB"', type: 'error' });
+      }
+      const startId = parts[0].replace(/"/g, '').toLowerCase().replace(/\s+/g, '-');
+      const endId = parts[1].replace(/"/g, '').toLowerCase().replace(/\s+/g, '-');
+      const result = await findPath(startId, endId);
+      
+      if (!result.found) {
+        return res.json({ answer: result.message, type: 'path' });
+      }
+      
+      let answer = `Path found (${result.path.length} steps):\n\n`;
+      for (const step of result.path) {
+        answer += `${step.from} → ${step.to}\n`;
+        answer += `  Type: ${step.type}, Confidence: ${(step.confidence * 100).toFixed(0)}%\n\n`;
+      }
+      return res.json({ answer, type: 'path' });
+    }
+    
+    if (question.startsWith('/explain ')) {
+      const conceptId = question.substring(9).trim().toLowerCase().replace(/\s+/g, '-');
+      const result = await explainConcept(conceptId);
+      
+      if (!result.found) {
+        return res.json({ answer: result.message, type: 'error' });
+      }
+      
+      let answer = `# ${result.concept.name}\n\n`;
+      answer += `**Source:** ${result.concept.source} | **Confidence:** ${(result.concept.confidence * 100).toFixed(0)}%\n\n`;
+      
+      // Extract definition from content
+      const defMatch = result.concept.content.match(/## Definition\n([^#]+)/);
+      if (defMatch) {
+        answer += `**Definition:**\n${defMatch[1].trim()}\n\n`;
+      }
+      
+      if (result.connections.incoming.length > 0) {
+        answer += `**Incoming connections (${result.connections.incoming.length}):**\n`;
+        for (const conn of result.connections.incoming.slice(0, 5)) {
+          answer += `- ${conn.from} (${conn.type}, ${(conn.confidence * 100).toFixed(0)}%)\n`;
+        }
+        answer += '\n';
+      }
+      
+      if (result.connections.outgoing.length > 0) {
+        answer += `**Outgoing connections (${result.connections.outgoing.length}):**\n`;
+        for (const conn of result.connections.outgoing.slice(0, 5)) {
+          answer += `- ${conn.to} (${conn.type}, ${(conn.confidence * 100).toFixed(0)}%)\n`;
+        }
+      }
+      
+      return res.json({ answer, type: 'explain' });
+    }
+    
+    // Default chat
     const answer = await chatWithKnowledge(question);
     res.json({ answer });
   } catch (error) {
