@@ -10,6 +10,17 @@ const __dirname = path.dirname(__filename);
 const configPath = path.join(__dirname, '../config.json');
 const config = JSON.parse(await fs.readFile(configPath, 'utf-8'));
 
+// Override with environment variables
+if (process.env.OPENROUTER_API_KEY) {
+  config.llm.apiKey = process.env.OPENROUTER_API_KEY;
+}
+if (process.env.LLM_MODEL) {
+  config.llm.model = process.env.LLM_MODEL;
+}
+if (process.env.LLM_BASE_URL) {
+  config.llm.baseUrl = process.env.LLM_BASE_URL;
+}
+
 // Initialize OpenRouter client
 const openrouter = new OpenAI({
   baseURL: config.llm.baseUrl || 'https://openrouter.ai/api/v1',

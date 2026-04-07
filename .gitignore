@@ -5,3 +5,4 @@ node_modules/
 wiki/
 raw/
 .obsidian/
+config.json

@@ -126,9 +126,10 @@ app.post('/api/fetch-url', async (req, res) => {
     
     // Use Jina Reader API to convert URL to LLM-readable format
     const jinaUrl = `https://r.jina.ai/${url}`;
+    const jinaApiKey = process.env.JINA_API_KEY || 'jina_40f7558a35e0459a9b59596312f8b8b9wLVqtaGnOMTjhjpAU7nwSX9b_37S';
     const response = await fetch(jinaUrl, {
       headers: {
-        'Authorization': 'Bearer jina_40f7558a35e0459a9b59596312f8b8b9wLVqtaGnOMTjhjpAU7nwSX9b_37S'
+        'Authorization': `Bearer ${jinaApiKey}`
       }
     });
     

@@ -1,0 +1,17 @@
+{
+  "llm": {
+    "provider": "openrouter",
+    "model": "meta-llama/llama-3.3-70b-instruct",
+    "apiKey": "",
+    "baseUrl": "https://openrouter.ai/api/v1"
+  },
+  "paths": {
+    "raw": "raw",
+    "wiki": "wiki"
+  },
+  "processing": {
+    "autoSummarize": true,
+    "extractConcepts": true,
+    "findConnections": false
+  }
+}
