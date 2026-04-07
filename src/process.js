@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { extractText } from './parser.js';
 import { generateSummary, extractConcepts, findConnections } from './llm.js';
+import { updateProcessingStatus, addProcessingLog, resetProcessingStatus } from './status.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +19,14 @@ export async function processRawFiles() {
   const rawDir = path.join(__dirname, '..', config.paths.raw);
   const wikiDir = path.join(__dirname, '..', config.paths.wiki);
 
+  // Reset and initialize status
+  resetProcessingStatus();
+  updateProcessingStatus({
+    isProcessing: true,
+    startTime: new Date().toISOString()
+  });
+  addProcessingLog('Starting knowledge processing...');
+
   // Ensure wiki directories exist
   await fs.mkdir(path.join(wikiDir, 'summaries'), { recursive: true });
   await fs.mkdir(path.join(wikiDir, 'concepts'), { recursive: true });
@@ -31,6 +40,11 @@ export async function processRawFiles() {
   // Get all files from raw directory
   const files = await getAllFiles(rawDir);
   console.log(`📄 Found ${files.length} files to process`);
+  
+  updateProcessingStatus({
+    totalFiles: files.length
+  });
+  addProcessingLog(`Found ${files.length} files to process`);
 
   // Process each file
   for (const file of files) {
@@ -38,6 +52,10 @@ export async function processRawFiles() {
   }
 
   console.log('✅ Processing complete!');
+  addProcessingLog('Processing complete!');
+  updateProcessingStatus({
+    isProcessing: false
+  });
 }
 
 /**
@@ -73,6 +91,12 @@ async function processFile(filePath, wikiDir) {
   const fileName = path.basename(filePath);
   const ext = path.extname(filePath);
   
+  updateProcessingStatus({
+    currentFile: fileName,
+    processedFiles: (await updateProcessingStatus).processedFiles || 0
+  });
+  addProcessingLog(`Processing: ${fileName}`);
+  
   console.log(`📄 Processing: ${fileName}`);
 
   // Extract text from file
@@ -81,38 +105,52 @@ async function processFile(filePath, wikiDir) {
     content = await extractText(filePath);
     if (!content || content.trim().length === 0) {
       console.log(`  ⚠️  No content extracted from ${fileName}`);
+      addProcessingLog(`No content extracted from ${fileName}`);
       return;
     }
   } catch (error) {
     console.log(`  ⚠️  Could not extract text from ${fileName}`);
+    addProcessingLog(`Error extracting text from ${fileName}: ${error.message}`);
     return;
   }
 
   // Generate summary
   if (config.processing.autoSummarize) {
     try {
+      addProcessingLog(`Generating summary for ${fileName}...`);
       const summary = await generateSummary(fileName, content);
       const summaryPath = path.join(wikiDir, 'summaries', `${path.parse(fileName).name}.md`);
       await fs.writeFile(summaryPath, summary);
       console.log(`  ✓ Summary created`);
+      addProcessingLog(`Summary created for ${fileName}`);
     } catch (error) {
       console.log(`  ⚠️  Failed to generate summary: ${error.message}`);
+      addProcessingLog(`Failed to generate summary: ${error.message}`);
     }
   }
 
   // Extract concepts
   if (config.processing.extractConcepts) {
     try {
+      addProcessingLog(`Extracting concepts from ${fileName}...`);
       const concepts = await extractConcepts(content);
       for (const concept of concepts) {
         const conceptPath = path.join(wikiDir, 'concepts', `${concept.slug}.md`);
         await updateConceptPage(conceptPath, concept, fileName);
       }
       console.log(`  ✓ Concepts extracted: ${concepts.length}`);
+      addProcessingLog(`Extracted ${concepts.length} concepts from ${fileName}`);
     } catch (error) {
       console.log(`  ⚠️  Failed to extract concepts: ${error.message}`);
+      addProcessingLog(`Failed to extract concepts: ${error.message}`);
     }
   }
+  
+  // Update processed count
+  const status = getProcessingStatus();
+  updateProcessingStatus({
+    processedFiles: (status.processedFiles || 0) + 1
+  });
 }
 
 /**

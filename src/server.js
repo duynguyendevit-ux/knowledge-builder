@@ -6,6 +6,7 @@ import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { getStats, listSummaries, listConcepts, getGraphData } from './api.js';
 import { processRawFiles } from './process.js';
+import { getProcessingStatus } from './status.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -76,6 +77,18 @@ app.get('/api/graph', async (req, res) => {
   try {
     const graphData = await getGraphData();
     res.json(graphData);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/status - Get processing status
+ */
+app.get('/api/status', async (req, res) => {
+  try {
+    const status = getProcessingStatus();
+    res.json(status);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
