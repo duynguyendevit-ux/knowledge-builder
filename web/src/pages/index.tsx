@@ -18,7 +18,7 @@ export default function Home() {
     fetchStats()
   }, [])
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://139.59.109.76:3002'
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
   const fetchStats = async () => {
     try {
