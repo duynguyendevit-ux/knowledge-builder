@@ -18,9 +18,11 @@ export default function Home() {
     fetchStats()
   }, [])
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://139.59.109.76:3002'
+
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/stats')
+      const response = await fetch(`${API_URL}/api/stats`)
       const data = await response.json()
       setStats(data)
     } catch (error) {
@@ -44,13 +46,13 @@ export default function Home() {
       const formData = new FormData()
       files.forEach(file => formData.append('files', file))
       
-      await fetch('/api/upload', {
+      await fetch(`${API_URL}/api/upload`, {
         method: 'POST',
         body: formData
       })
       
       // Trigger processing
-      await fetch('/api/process', {
+      await fetch(`${API_URL}/api/process`, {
         method: 'POST'
       })
       
