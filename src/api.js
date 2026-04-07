@@ -173,25 +173,40 @@ export async function getGraphData() {
       const filePath = path.join(conceptsDir, file);
       const content = await fs.readFile(filePath, 'utf-8');
 
+      // Extract title and metadata from frontmatter
+      const titleMatch = content.match(/title:\s*(.+)/);
+      const sourceMatch = content.match(/source:\s*(.+)/);
+      const confidenceMatch = content.match(/confidence:\s*([0-9.]+)/);
+      
+      const title = titleMatch ? titleMatch[1].replace(/['"]/g, '') : file;
+      const source = sourceMatch ? sourceMatch[1].trim() : 'INFERRED';
+      const confidence = confidenceMatch ? parseFloat(confidenceMatch[1]) : 0.8;
+
       // Count backlinks
       const backlinksMatch = content.match(/## Mentioned In\n([\s\S]*?)(?=\n##|$)/);
       const backlinks = backlinksMatch ? (backlinksMatch[1].match(/\[\[/g) || []).length : 0;
 
       nodes.push({
         id,
-        name: id.replace(/-/g, ' '),
+        name: title,
         type: 'concept',
-        backlinks
+        backlinks,
+        source,
+        confidence
       });
 
-      // Extract links from backlinks
+      // Extract links from backlinks with confidence scores
       if (backlinksMatch) {
-        const linkMatches = backlinksMatch[1].matchAll(/\[\[([^\]]+)\]\]/g);
+        const linkMatches = backlinksMatch[1].matchAll(/\[\[([^\]]+)\]\]\s*\(([^,]+),\s*confidence:\s*([0-9.]+)\)/g);
         for (const match of linkMatches) {
           const targetId = match[1];
+          const linkSource = match[2].trim();
+          const linkConfidence = parseFloat(match[3]);
           links.push({
             source: targetId,
-            target: id
+            target: id,
+            type: linkSource,
+            confidence: linkConfidence
           });
         }
       }

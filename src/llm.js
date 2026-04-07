@@ -88,13 +88,15 @@ Format as markdown with YAML frontmatter. Use Obsidian wikilink format [[concept
  * Extract concepts from content
  */
 export async function extractConcepts(content) {
-  const systemPrompt = `You are a concept extraction specialist. Extract key concepts from documents.`;
+  const systemPrompt = `You are a concept extraction specialist. Extract key concepts from documents and classify each relationship.`;
   
   const prompt = `From this document, extract key concepts.
 For each concept:
 - Name (short, 2-3 words)
 - Brief definition (1 sentence)
 - Importance (why it matters)
+- Source: EXTRACTED (directly stated in text) or INFERRED (reasonable inference)
+- Confidence: 0.0-1.0 (1.0 for EXTRACTED, 0.5-0.9 for INFERRED)
 
 Return as JSON array:
 [
@@ -102,7 +104,9 @@ Return as JSON array:
     "name": "concept-name",
     "slug": "concept-name",
     "definition": "Brief definition",
-    "importance": "Why it matters"
+    "importance": "Why it matters",
+    "source": "EXTRACTED",
+    "confidence": 1.0
   }
 ]
 
@@ -116,7 +120,13 @@ Return ONLY valid JSON, no markdown formatting.`;
     // Try to parse JSON from response
     const jsonMatch = response.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      const concepts = JSON.parse(jsonMatch[0]);
+      // Ensure all concepts have source and confidence
+      return concepts.map(c => ({
+        ...c,
+        source: c.source || 'INFERRED',
+        confidence: c.confidence || 0.8
+      }));
     }
     return [];
   } catch (error) {

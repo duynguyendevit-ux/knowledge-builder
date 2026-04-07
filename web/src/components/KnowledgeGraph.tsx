@@ -61,9 +61,28 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
       .selectAll('line')
       .data(links)
       .join('line')
-      .attr('stroke', '#e8dcc8')
-      .attr('stroke-width', 2)
-      .attr('stroke-opacity', 0.6)
+      .attr('stroke', (d: any) => {
+        // Color by confidence: high = green, medium = orange, low = red
+        const confidence = d.confidence || 0.8
+        if (confidence >= 0.9) return '#10b981' // green
+        if (confidence >= 0.7) return '#f59e0b' // orange
+        return '#ef4444' // red
+      })
+      .attr('stroke-width', (d: any) => {
+        // Thicker lines for higher confidence
+        const confidence = d.confidence || 0.8
+        return confidence >= 0.9 ? 3 : 2
+      })
+      .attr('stroke-opacity', (d: any) => {
+        const confidence = d.confidence || 0.8
+        return 0.3 + (confidence * 0.5) // 0.3-0.8 opacity
+      })
+      .attr('stroke-dasharray', (d: any) => {
+        // Dashed lines for INFERRED
+        return d.type === 'INFERRED' ? '5,5' : 'none'
+      })
+      .append('title')
+      .text((d: any) => `${d.type || 'INFERRED'} (confidence: ${((d.confidence || 0.8) * 100).toFixed(0)}%)`)
 
     // Create nodes
     const node = g.append('g')
@@ -78,9 +97,21 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
     // Add circles
     node.append('circle')
       .attr('r', (d: any) => d.type === 'concept' ? 20 : 15)
-      .attr('fill', (d: any) => d.type === 'concept' ? '#c2652a' : '#8b7355')
+      .attr('fill', (d: any) => {
+        if (d.type === 'summary') return '#8b7355'
+        // Color concepts by confidence
+        const confidence = d.confidence || 0.8
+        if (d.source === 'EXTRACTED') return '#10b981' // green for extracted
+        if (confidence >= 0.8) return '#f59e0b' // orange for high confidence inferred
+        return '#ef4444' // red for low confidence
+      })
       .attr('stroke', '#fff')
       .attr('stroke-width', 2)
+      .append('title')
+      .text((d: any) => {
+        if (d.type === 'summary') return d.name
+        return `${d.name}\n${d.source || 'INFERRED'} (${((d.confidence || 0.8) * 100).toFixed(0)}% confidence)`
+      })
 
     // Add labels
     node.append('text')
@@ -162,15 +193,23 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
       {!isFullscreen && (
         <div className="px-6 pb-6 flex items-center gap-6 text-sm text-[#8b7355]">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-[#c2652a]"></div>
-            <span>Concepts</span>
+            <div className="w-4 h-4 rounded-full bg-[#10b981]"></div>
+            <span>EXTRACTED (100%)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-[#f59e0b]"></div>
+            <span>INFERRED (≥80%)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-[#ef4444]"></div>
+            <span>INFERRED (&lt;80%)</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-[#8b7355]"></div>
             <span>Summaries</span>
           </div>
           <div className="text-xs text-[#b8a490] ml-auto">
-            💡 Scroll to zoom • Drag to pan • Drag nodes to rearrange
+            💡 Scroll to zoom • Drag to pan • Hover for details
           </div>
         </div>
       )}

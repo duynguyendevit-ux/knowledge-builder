@@ -167,10 +167,14 @@ async function updateConceptPage(conceptPath, concept, sourceFile) {
 title: ${concept.name}
 type: concept
 tags: [concept]
+source: ${concept.source || 'INFERRED'}
+confidence: ${concept.confidence || 0.8}
 created: ${new Date().toISOString()}
 ---
 
 # ${concept.name}
+
+**Source:** ${concept.source || 'INFERRED'} | **Confidence:** ${(concept.confidence || 0.8).toFixed(2)}
 
 ## Definition
 ${concept.definition}
@@ -181,15 +185,15 @@ ${concept.importance}
 ## Related Concepts
 
 ## Mentioned In
-- [[${path.parse(sourceFile).name}]]
+- [[${path.parse(sourceFile).name}]] (${concept.source || 'INFERRED'}, confidence: ${(concept.confidence || 0.8).toFixed(2)})
 `;
     await fs.writeFile(conceptPath, content);
     return;
   }
   
   // Add backlink if not already present
-  const backlink = `- [[${path.parse(sourceFile).name}]]`;
-  if (!content.includes(backlink)) {
+  const backlink = `- [[${path.parse(sourceFile).name}]] (${concept.source || 'INFERRED'}, confidence: ${(concept.confidence || 0.8).toFixed(2)})`;
+  if (!content.includes(`[[${path.parse(sourceFile).name}]]`)) {
     content = content.replace(
       '## Mentioned In',
       `## Mentioned In\n${backlink}`
