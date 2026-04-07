@@ -13,22 +13,24 @@ export default function Home() {
     connections: 0
   })
 
-  // Fetch stats on mount
-  useEffect(() => {
-    fetchStats()
-  }, [])
-
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
   const fetchStats = async () => {
     try {
+      console.log('Fetching stats from:', `${API_URL}/api/stats`)
       const response = await fetch(`${API_URL}/api/stats`)
       const data = await response.json()
+      console.log('Stats received:', data)
       setStats(data)
     } catch (error) {
       console.error('Failed to fetch stats:', error)
     }
   }
+
+  // Fetch stats on mount
+  useEffect(() => {
+    fetchStats()
+  }, [])
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
