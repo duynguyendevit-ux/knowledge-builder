@@ -92,8 +92,7 @@ async function processFile(filePath, wikiDir) {
   const ext = path.extname(filePath);
   
   updateProcessingStatus({
-    currentFile: fileName,
-    processedFiles: (await updateProcessingStatus).processedFiles || 0
+    currentFile: fileName
   });
   addProcessingLog(`Processing: ${fileName}`);
   

@@ -1,7 +1,7 @@
 {
   "llm": {
     "provider": "openrouter",
-    "model": "qwen/qwen3.6-plus:free",
+    "model": "meta-llama/llama-3.3-70b-instruct",
     "apiKey": "",
     "baseUrl": "https://openrouter.ai/api/v1"
   },
