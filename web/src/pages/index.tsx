@@ -71,70 +71,75 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <Brain className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Knowledge Builder</h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Brain className="w-8 h-8 text-gray-900" />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Knowledge Builder</h1>
+                <p className="text-xs text-gray-500 font-mono">HTTP/2 200 OK</p>
+              </div>
+            </div>
+            <div className="text-xs text-gray-400 font-mono">v1.0.0</div>
           </div>
-          <p className="text-gray-600 mt-2">AI-powered knowledge management system</p>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white border border-gray-200 rounded p-6 hover:border-gray-300 transition-colors">
             <div className="flex items-center gap-3">
-              <FileText className="w-8 h-8 text-blue-600" />
+              <FileText className="w-6 h-6 text-gray-700" />
               <div>
-                <p className="text-sm text-gray-600">Total Files</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalFiles}</p>
+                <p className="text-xs text-gray-500 font-mono uppercase tracking-wide">Total Files</p>
+                <p className="text-3xl font-bold text-gray-900 font-mono">{stats.totalFiles}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white border border-gray-200 rounded p-6 hover:border-gray-300 transition-colors">
             <div className="flex items-center gap-3">
-              <FileText className="w-8 h-8 text-green-600" />
+              <FileText className="w-6 h-6 text-gray-700" />
               <div>
-                <p className="text-sm text-gray-600">Summaries</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.summaries}</p>
+                <p className="text-xs text-gray-500 font-mono uppercase tracking-wide">Summaries</p>
+                <p className="text-3xl font-bold text-gray-900 font-mono">{stats.summaries}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white border border-gray-200 rounded p-6 hover:border-gray-300 transition-colors">
             <div className="flex items-center gap-3">
-              <Brain className="w-8 h-8 text-purple-600" />
+              <Brain className="w-6 h-6 text-gray-700" />
               <div>
-                <p className="text-sm text-gray-600">Concepts</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.concepts}</p>
+                <p className="text-xs text-gray-500 font-mono uppercase tracking-wide">Concepts</p>
+                <p className="text-3xl font-bold text-gray-900 font-mono">{stats.concepts}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white border border-gray-200 rounded p-6 hover:border-gray-300 transition-colors">
             <div className="flex items-center gap-3">
-              <Network className="w-8 h-8 text-orange-600" />
+              <Network className="w-6 h-6 text-gray-700" />
               <div>
-                <p className="text-sm text-gray-600">Connections</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.connections}</p>
+                <p className="text-xs text-gray-500 font-mono uppercase tracking-wide">Connections</p>
+                <p className="text-3xl font-bold text-gray-900 font-mono">{stats.connections}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Upload Section */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-            <Upload className="w-6 h-6" />
-            Upload Raw Data
-          </h2>
-          
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-blue-500 transition-colors">
+        <div className="bg-white border border-gray-200 rounded p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <Upload className="w-6 h-6 text-gray-700" />
+            <h2 className="text-xl font-bold text-gray-900">Upload Files</h2>
+          </div>
+
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
             <input
               type="file"
               multiple
@@ -143,32 +148,28 @@ export default function Home() {
               id="file-upload"
             />
             <label htmlFor="file-upload" className="cursor-pointer">
-              <Upload className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <p className="text-lg text-gray-600 mb-2">
-                Drop files here or click to upload
-              </p>
-              <p className="text-sm text-gray-500">
-                Supports: PDF, MD, TXT, DOCX, images
-              </p>
+              <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 mb-2">Drop files here or click to upload</p>
+              <p className="text-xs text-gray-400 font-mono">Supports: .md, .txt, .docx, .pdf</p>
             </label>
           </div>
 
           {files.length > 0 && (
             <div className="mt-6">
-              <h3 className="font-semibold mb-3">Selected Files ({files.length})</h3>
-              <div className="space-y-2 max-h-40 overflow-y-auto">
+              <p className="text-sm text-gray-600 font-mono mb-3">{files.length} file(s) selected</p>
+              <div className="space-y-2 mb-4">
                 {files.map((file, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                  <div key={i} className="flex items-center gap-2 text-sm text-gray-700 font-mono bg-gray-50 px-3 py-2 rounded">
                     <FileText className="w-4 h-4" />
-                    {file.name}
+                    <span>{file.name}</span>
+                    <span className="text-gray-400">({(file.size / 1024).toFixed(1)} KB)</span>
                   </div>
                 ))}
               </div>
-              
               <button
                 onClick={processFiles}
                 disabled={processing}
-                className="mt-4 w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+                className="w-full bg-gray-900 text-white px-6 py-3 rounded font-mono hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
                 {processing ? (
                   <span className="flex items-center justify-center gap-2">
@@ -183,32 +184,10 @@ export default function Home() {
           )}
         </div>
 
-        {/* Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <FileText className="w-12 h-12 text-blue-600 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Auto-Summarization</h3>
-            <p className="text-gray-600">
-              Automatically generate summaries for all documents using LLM
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <Brain className="w-12 h-12 text-purple-600 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Concept Extraction</h3>
-            <p className="text-gray-600">
-              Extract and organize key concepts from your knowledge base
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <Network className="w-12 h-12 text-orange-600 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Connection Discovery</h3>
-            <p className="text-gray-600">
-              Find relationships and connections between different documents
-            </p>
-          </div>
-        </div>
+        {/* Footer */}
+        <footer className="mt-12 text-center">
+          <p className="text-xs text-gray-400 font-mono">304 Not Modified • Cached Response</p>
+        </footer>
       </main>
     </div>
   )
