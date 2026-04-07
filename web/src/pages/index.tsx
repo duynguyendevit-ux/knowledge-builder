@@ -9,6 +9,8 @@ const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), { s
 export default function Home() {
   const [files, setFiles] = useState<File[]>([])
   const [processing, setProcessing] = useState(false)
+  const [url, setUrl] = useState('')
+  const [fetchingUrl, setFetchingUrl] = useState(false)
   const [stats, setStats] = useState({
     totalFiles: 0,
     summaries: 0,
@@ -105,6 +107,41 @@ export default function Home() {
     }
   }
 
+  const fetchFromUrl = async () => {
+    if (!url) return
+    
+    setFetchingUrl(true)
+    
+    try {
+      const response = await fetch(`${API_URL}/api/fetch-url`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      })
+      
+      if (response.ok) {
+        // Trigger processing
+        await fetch(`${API_URL}/api/process`, {
+          method: 'POST'
+        })
+        
+        setTimeout(() => {
+          fetchStats()
+          fetchGraphData()
+          setUrl('')
+          setFetchingUrl(false)
+        }, 3000)
+      } else {
+        alert('Failed to fetch URL')
+        setFetchingUrl(false)
+      }
+    } catch (error) {
+      console.error('Failed to fetch URL:', error)
+      alert('Failed to fetch URL')
+      setFetchingUrl(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#faf5ee]" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
@@ -182,8 +219,46 @@ export default function Home() {
           <div className="flex items-center gap-3 mb-8">
             <Upload className="w-7 h-7 text-[#c2652a]" />
             <h2 className="text-3xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
-              Upload Files
+              Add Knowledge
             </h2>
+          </div>
+
+          {/* URL Input */}
+          <div className="mb-8">
+            <label className="block text-sm text-[#8b7355] mb-3">Fetch from URL</label>
+            <div className="flex gap-3">
+              <input
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://example.com/article"
+                className="flex-1 px-4 py-3 border border-[#e8dcc8] rounded-lg focus:outline-none focus:border-[#c2652a] text-[#2d2520]"
+              />
+              <button
+                onClick={fetchFromUrl}
+                disabled={fetchingUrl || !url}
+                className="bg-[#c2652a] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#a85424] disabled:bg-[#b8a490] disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+              >
+                {fetchingUrl ? (
+                  <span className="flex items-center gap-2">
+                    <Activity className="w-5 h-5 animate-spin" />
+                    Fetching...
+                  </span>
+                ) : (
+                  'Fetch & Analyze'
+                )}
+              </button>
+            </div>
+            <p className="text-xs text-[#b8a490] mt-2">Enter a URL to fetch and analyze web content</p>
+          </div>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#e8dcc8]"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white text-[#8b7355]">or upload files</span>
+            </div>
           </div>
 
           <div className="border-2 border-dashed border-[#e8dcc8] rounded-lg p-12 text-center hover:border-[#c2652a] transition-colors">

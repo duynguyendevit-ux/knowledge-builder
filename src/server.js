@@ -95,6 +95,46 @@ app.get('/api/status', async (req, res) => {
 });
 
 /**
+ * POST /api/fetch-url - Fetch content from URL
+ */
+app.post('/api/fetch-url', async (req, res) => {
+  try {
+    const { url } = req.body;
+    
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+    
+    // Fetch content from URL
+    const response = await fetch(url);
+    const html = await response.text();
+    
+    // Simple HTML to text conversion (remove tags)
+    const text = html
+      .replace(/<script[^>]*>.*?<\/script>/gi, '')
+      .replace(/<style[^>]*>.*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    // Save to raw directory
+    const rawDir = path.join(__dirname, '../raw');
+    const fileName = `${new URL(url).hostname.replace(/\./g, '-')}-${Date.now()}.txt`;
+    const filePath = path.join(rawDir, fileName);
+    
+    await fs.writeFile(filePath, `URL: ${url}\n\n${text}`);
+    
+    res.json({ 
+      success: true, 
+      fileName,
+      message: 'URL content fetched and saved' 
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * POST /api/upload - Upload files
  */
 app.post('/api/upload', upload.array('files'), async (req, res) => {
