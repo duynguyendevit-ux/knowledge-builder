@@ -95,7 +95,7 @@ app.get('/api/status', async (req, res) => {
 });
 
 /**
- * POST /api/fetch-url - Fetch content from URL
+ * POST /api/fetch-url - Fetch content from URL using Jina Reader
  */
 app.post('/api/fetch-url', async (req, res) => {
   try {
@@ -105,24 +105,26 @@ app.post('/api/fetch-url', async (req, res) => {
       return res.status(400).json({ error: 'URL is required' });
     }
     
-    // Fetch content from URL
-    const response = await fetch(url);
-    const html = await response.text();
+    // Use Jina Reader API to convert URL to LLM-readable format
+    const jinaUrl = `https://r.jina.ai/${url}`;
+    const response = await fetch(jinaUrl, {
+      headers: {
+        'Authorization': 'Bearer jina_40f7558a35e0459a9b59596312f8b8b9wLVqtaGnOMTjhjpAU7nwSX9b_37S'
+      }
+    });
     
-    // Simple HTML to text conversion (remove tags)
-    const text = html
-      .replace(/<script[^>]*>.*?<\/script>/gi, '')
-      .replace(/<style[^>]*>.*?<\/style>/gi, '')
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    if (!response.ok) {
+      throw new Error(`Jina API error: ${response.status}`);
+    }
+    
+    const markdown = await response.text();
     
     // Save to raw directory
     const rawDir = path.join(__dirname, '../raw');
-    const fileName = `${new URL(url).hostname.replace(/\./g, '-')}-${Date.now()}.txt`;
+    const fileName = `${new URL(url).hostname.replace(/\./g, '-')}-${Date.now()}.md`;
     const filePath = path.join(rawDir, fileName);
     
-    await fs.writeFile(filePath, `URL: ${url}\n\n${text}`);
+    await fs.writeFile(filePath, `Source URL: ${url}\n\n${markdown}`);
     
     res.json({ 
       success: true, 
