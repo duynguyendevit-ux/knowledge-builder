@@ -91,7 +91,7 @@ export default function Home() {
               <FileText className="w-8 h-8 text-blue-600" />
               <div>
                 <p className="text-sm text-gray-600">Total Files</p>
-                <p className="text-2xl font-bold">{stats.totalFiles}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalFiles}</p>
               </div>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function Home() {
               <FileText className="w-8 h-8 text-green-600" />
               <div>
                 <p className="text-sm text-gray-600">Summaries</p>
-                <p className="text-2xl font-bold">{stats.summaries}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.summaries}</p>
               </div>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function Home() {
               <Brain className="w-8 h-8 text-purple-600" />
               <div>
                 <p className="text-sm text-gray-600">Concepts</p>
-                <p className="text-2xl font-bold">{stats.concepts}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.concepts}</p>
               </div>
             </div>
           </div>
@@ -121,7 +121,7 @@ export default function Home() {
               <Network className="w-8 h-8 text-orange-600" />
               <div>
                 <p className="text-sm text-gray-600">Connections</p>
-                <p className="text-2xl font-bold">{stats.connections}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.connections}</p>
               </div>
             </div>
           </div>
