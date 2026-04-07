@@ -19,6 +19,9 @@ export default function Home() {
   })
   const [graphData, setGraphData] = useState<{ nodes: any[], links: any[] }>({ nodes: [], links: [] })
   const [processingStatus, setProcessingStatus] = useState<any>(null)
+  const [chatQuestion, setChatQuestion] = useState('')
+  const [chatAnswer, setChatAnswer] = useState('')
+  const [chatLoading, setChatLoading] = useState(false)
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
@@ -139,6 +142,29 @@ export default function Home() {
       console.error('Failed to fetch URL:', error)
       alert('Failed to fetch URL')
       setFetchingUrl(false)
+    }
+  }
+
+  const askQuestion = async () => {
+    if (!chatQuestion) return
+    
+    setChatLoading(true)
+    setChatAnswer('')
+    
+    try {
+      const response = await fetch(`${API_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: chatQuestion })
+      })
+      
+      const data = await response.json()
+      setChatAnswer(data.answer)
+      setChatLoading(false)
+    } catch (error) {
+      console.error('Failed to ask question:', error)
+      setChatAnswer('Failed to get answer. Please try again.')
+      setChatLoading(false)
     }
   }
 
@@ -337,6 +363,48 @@ export default function Home() {
             </h2>
           </div>
           <KnowledgeGraph nodes={graphData.nodes} links={graphData.links} />
+        </div>
+
+        {/* AI Chat */}
+        <div className="mt-12">
+          <div className="flex items-center gap-3 mb-6">
+            <Brain className="w-7 h-7 text-[#c2652a]" />
+            <h2 className="text-3xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
+              Ask Questions
+            </h2>
+          </div>
+          <div className="bg-white border border-[#e8dcc8] rounded-lg p-8">
+            <div className="flex gap-3 mb-6">
+              <input
+                type="text"
+                value={chatQuestion}
+                onChange={(e) => setChatQuestion(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && askQuestion()}
+                placeholder="Ask anything about your knowledge base..."
+                className="flex-1 px-4 py-3 border border-[#e8dcc8] rounded-lg focus:outline-none focus:border-[#c2652a] text-[#2d2520]"
+              />
+              <button
+                onClick={askQuestion}
+                disabled={chatLoading || !chatQuestion}
+                className="bg-[#c2652a] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#a85424] disabled:bg-[#b8a490] disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+              >
+                {chatLoading ? (
+                  <span className="flex items-center gap-2">
+                    <Activity className="w-5 h-5 animate-spin" />
+                    Thinking...
+                  </span>
+                ) : (
+                  'Ask'
+                )}
+              </button>
+            </div>
+            {chatAnswer && (
+              <div className="bg-[#faf5ee] border border-[#e8dcc8] rounded-lg p-6">
+                <p className="text-sm text-[#8b7355] mb-2">Answer:</p>
+                <div className="text-[#2d2520] whitespace-pre-wrap">{chatAnswer}</div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer */}

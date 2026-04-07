@@ -2,8 +2,8 @@
   "llm": {
     "provider": "openrouter",
     "model": "meta-llama/llama-3.3-70b-instruct",
-    "apiKey": "sk-e53f140b15705189-ox1esx-c9aaee63",
-    "baseUrl": "https://9router.tomtom79.tech/api/v1"
+    "apiKey": "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",
+    "baseUrl": "https://openrouter.ai/api/v1"
   },
   "paths": {
     "raw": "./raw",

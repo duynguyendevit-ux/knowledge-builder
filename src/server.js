@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import { getStats, listSummaries, listConcepts, getGraphData } from './api.js';
 import { processRawFiles } from './process.js';
 import { getProcessingStatus } from './status.js';
+import { chatWithKnowledge } from './chat.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -89,6 +90,24 @@ app.get('/api/status', async (req, res) => {
   try {
     const status = getProcessingStatus();
     res.json(status);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/chat - Chat with knowledge base
+ */
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { question } = req.body;
+    
+    if (!question) {
+      return res.status(400).json({ error: 'Question is required' });
+    }
+    
+    const answer = await chatWithKnowledge(question);
+    res.json({ answer });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
