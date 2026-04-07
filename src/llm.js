@@ -23,6 +23,7 @@ if (process.env.LLM_BASE_URL) {
 
 // Initialize OpenRouter client
 const apiKey = process.env.OPENROUTER_API_KEY || config.llm.apiKey;
+console.log('🔑 API Key loaded:', apiKey ? `${apiKey.substring(0, 15)}...` : 'MISSING');
 const openrouter = new OpenAI({
   baseURL: config.llm.baseUrl || 'https://openrouter.ai/api/v1',
   apiKey: apiKey,

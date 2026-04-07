@@ -22,6 +22,8 @@ export default function Home() {
   const [chatQuestion, setChatQuestion] = useState('')
   const [chatAnswer, setChatAnswer] = useState('')
   const [chatLoading, setChatLoading] = useState(false)
+  const [chatHistory, setChatHistory] = useState<{question: string, answer: string}[]>([])
+  const [activeTab, setActiveTab] = useState<'upload' | 'chat'>('upload')
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
@@ -149,7 +151,6 @@ export default function Home() {
     if (!chatQuestion) return
     
     setChatLoading(true)
-    setChatAnswer('')
     
     try {
       const response = await fetch(`${API_URL}/api/chat`, {
@@ -159,11 +160,12 @@ export default function Home() {
       })
       
       const data = await response.json()
-      setChatAnswer(data.answer)
+      setChatHistory([...chatHistory, { question: chatQuestion, answer: data.answer }])
+      setChatQuestion('')
       setChatLoading(false)
     } catch (error) {
       console.error('Failed to ask question:', error)
-      setChatAnswer('Failed to get answer. Please try again.')
+      setChatHistory([...chatHistory, { question: chatQuestion, answer: 'Failed to get answer. Please try again.' }])
       setChatLoading(false)
     }
   }
@@ -240,172 +242,235 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Upload Section */}
-        <div className="bg-white border border-[#e8dcc8] rounded-lg p-10">
-          <div className="flex items-center gap-3 mb-8">
-            <Upload className="w-7 h-7 text-[#c2652a]" />
-            <h2 className="text-3xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
-              Add Knowledge
-            </h2>
-          </div>
-
-          {/* URL Input */}
-          <div className="mb-8">
-            <label className="block text-sm text-[#8b7355] mb-3">Fetch from URL</label>
-            <div className="flex gap-3">
-              <input
-                type="url"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://example.com/article"
-                className="flex-1 px-4 py-3 border border-[#e8dcc8] rounded-lg focus:outline-none focus:border-[#c2652a] text-[#2d2520]"
-              />
-              <button
-                onClick={fetchFromUrl}
-                disabled={fetchingUrl || !url}
-                className="bg-[#c2652a] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#a85424] disabled:bg-[#b8a490] disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-              >
-                {fetchingUrl ? (
-                  <span className="flex items-center gap-2">
-                    <Activity className="w-5 h-5 animate-spin" />
-                    Fetching...
-                  </span>
-                ) : (
-                  'Fetch & Analyze'
-                )}
-              </button>
-            </div>
-            <p className="text-xs text-[#b8a490] mt-2">Enter a URL to fetch and analyze web content</p>
-          </div>
-
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#e8dcc8]"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-[#8b7355]">or upload files</span>
-            </div>
-          </div>
-
-          <div className="border-2 border-dashed border-[#e8dcc8] rounded-lg p-12 text-center hover:border-[#c2652a] transition-colors">
-            <input
-              type="file"
-              multiple
-              onChange={handleFileUpload}
-              className="hidden"
-              id="file-upload"
-            />
-            <label htmlFor="file-upload" className="cursor-pointer">
-              <Upload className="w-16 h-16 text-[#b8a490] mx-auto mb-4" />
-              <p className="text-lg text-[#2d2520] mb-2">Drop files here or click to upload</p>
-              <p className="text-sm text-[#8b7355]">Supports: .md, .txt, .docx, .pdf</p>
-            </label>
-          </div>
-
-          {processingStatus?.isProcessing && (
-            <div className="mt-6 bg-[#faf5ee] border border-[#e8dcc8] rounded-lg p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <Activity className="w-5 h-5 text-[#c2652a] animate-spin" />
-                <p className="text-sm font-semibold text-[#2d2520]">Processing...</p>
-              </div>
-              <div className="space-y-2 text-sm text-[#8b7355]">
-                <p>Current: {processingStatus.currentFile || 'Initializing...'}</p>
-                <p>Progress: {processingStatus.processedFiles} / {processingStatus.totalFiles} files</p>
-                {processingStatus.logs.length > 0 && (
-                  <div className="mt-3 max-h-32 overflow-y-auto bg-white rounded p-2 text-xs font-mono">
-                    {processingStatus.logs.slice(-5).map((log: any, i: number) => (
-                      <div key={i} className="text-[#8b7355]">
-                        {new Date(log.timestamp).toLocaleTimeString()}: {log.message}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {files.length > 0 && (
-            <div className="mt-8">
-              <p className="text-sm text-[#8b7355] mb-4">{files.length} file(s) selected</p>
-              <div className="space-y-3 mb-6">
-                {files.map((file, i) => (
-                  <div key={i} className="flex items-center gap-3 text-sm text-[#2d2520] bg-[#faf5ee] px-4 py-3 rounded-lg border border-[#e8dcc8]">
-                    <FileText className="w-5 h-5 text-[#c2652a]" />
-                    <span className="flex-1">{file.name}</span>
-                    <span className="text-[#8b7355]">({(file.size / 1024).toFixed(1)} KB)</span>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={processFiles}
-                disabled={processing}
-                className="w-full bg-[#c2652a] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#a85424] disabled:bg-[#b8a490] disabled:cursor-not-allowed transition-colors"
-              >
-                {processing ? (
-                  <span className="flex items-center justify-center gap-3">
-                    <Activity className="w-6 h-6 animate-spin" />
-                    Processing...
-                  </span>
-                ) : (
-                  'Process Files'
-                )}
-              </button>
-            </div>
-          )}
+        {/* Tab Navigation */}
+        <div className="flex gap-4 mb-8">
+          <button
+            onClick={() => setActiveTab('upload')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-colors ${
+              activeTab === 'upload'
+                ? 'bg-[#c2652a] text-white'
+                : 'bg-white text-[#8b7355] border border-[#e8dcc8] hover:border-[#c2652a]'
+            }`}
+          >
+            <Upload className="w-5 h-5" />
+            Upload & Process
+          </button>
+          <button
+            onClick={() => setActiveTab('chat')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-colors ${
+              activeTab === 'chat'
+                ? 'bg-[#c2652a] text-white'
+                : 'bg-white text-[#8b7355] border border-[#e8dcc8] hover:border-[#c2652a]'
+            }`}
+          >
+            <Brain className="w-5 h-5" />
+            AI Chat
+          </button>
         </div>
 
-        {/* Knowledge Graph */}
-        <div className="mt-12">
-          <div className="flex items-center gap-3 mb-6">
-            <Network className="w-7 h-7 text-[#c2652a]" />
-            <h2 className="text-3xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
-              Knowledge Graph
-            </h2>
-          </div>
-          <KnowledgeGraph nodes={graphData.nodes} links={graphData.links} />
-        </div>
-
-        {/* AI Chat */}
-        <div className="mt-12">
-          <div className="flex items-center gap-3 mb-6">
-            <Brain className="w-7 h-7 text-[#c2652a]" />
-            <h2 className="text-3xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
-              Ask Questions
-            </h2>
-          </div>
-          <div className="bg-white border border-[#e8dcc8] rounded-lg p-8">
-            <div className="flex gap-3 mb-6">
-              <input
-                type="text"
-                value={chatQuestion}
-                onChange={(e) => setChatQuestion(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && askQuestion()}
-                placeholder="Ask anything about your knowledge base..."
-                className="flex-1 px-4 py-3 border border-[#e8dcc8] rounded-lg focus:outline-none focus:border-[#c2652a] text-[#2d2520]"
-              />
-              <button
-                onClick={askQuestion}
-                disabled={chatLoading || !chatQuestion}
-                className="bg-[#c2652a] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#a85424] disabled:bg-[#b8a490] disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-              >
-                {chatLoading ? (
-                  <span className="flex items-center gap-2">
-                    <Activity className="w-5 h-5 animate-spin" />
-                    Thinking...
-                  </span>
-                ) : (
-                  'Ask'
-                )}
-              </button>
+        {/* Upload Tab */}
+        {activeTab === 'upload' && (
+          <div className="bg-white border border-[#e8dcc8] rounded-lg p-10">
+            <div className="flex items-center gap-3 mb-8">
+              <Upload className="w-7 h-7 text-[#c2652a]" />
+              <h2 className="text-3xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
+                Add Knowledge
+              </h2>
             </div>
-            {chatAnswer && (
-              <div className="bg-[#faf5ee] border border-[#e8dcc8] rounded-lg p-6">
-                <p className="text-sm text-[#8b7355] mb-2">Answer:</p>
-                <div className="text-[#2d2520] whitespace-pre-wrap">{chatAnswer}</div>
+
+            {/* URL Input */}
+            <div className="mb-8">
+              <label className="block text-sm text-[#8b7355] mb-3">Fetch from URL</label>
+              <div className="flex gap-3">
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="https://example.com/article"
+                  className="flex-1 px-4 py-3 border border-[#e8dcc8] rounded-lg focus:outline-none focus:border-[#c2652a] text-[#2d2520]"
+                />
+                <button
+                  onClick={fetchFromUrl}
+                  disabled={fetchingUrl || !url}
+                  className="bg-[#c2652a] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#a85424] disabled:bg-[#b8a490] disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                >
+                  {fetchingUrl ? (
+                    <span className="flex items-center gap-2">
+                      <Activity className="w-5 h-5 animate-spin" />
+                      Fetching...
+                    </span>
+                  ) : (
+                    'Fetch & Analyze'
+                  )}
+                </button>
+              </div>
+              <p className="text-xs text-[#b8a490] mt-2">Enter a URL to fetch and analyze web content</p>
+            </div>
+
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[#e8dcc8]"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-[#8b7355]">or upload files</span>
+              </div>
+            </div>
+
+            <div className="border-2 border-dashed border-[#e8dcc8] rounded-lg p-12 text-center hover:border-[#c2652a] transition-colors">
+              <input
+                type="file"
+                multiple
+                onChange={handleFileUpload}
+                className="hidden"
+                id="file-upload"
+              />
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Upload className="w-16 h-16 text-[#b8a490] mx-auto mb-4" />
+                <p className="text-lg text-[#2d2520] mb-2">Drop files here or click to upload</p>
+                <p className="text-sm text-[#8b7355]">Supports: .md, .txt, .docx, .pdf</p>
+              </label>
+            </div>
+
+            {processingStatus?.isProcessing && (
+              <div className="mt-6 bg-[#faf5ee] border border-[#e8dcc8] rounded-lg p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <Activity className="w-5 h-5 text-[#c2652a] animate-spin" />
+                  <p className="text-sm font-semibold text-[#2d2520]">Processing...</p>
+                </div>
+                <div className="space-y-2 text-sm text-[#8b7355]">
+                  <p>Current: {processingStatus.currentFile || 'Initializing...'}</p>
+                  <p>Progress: {processingStatus.processedFiles} / {processingStatus.totalFiles} files</p>
+                  {processingStatus.logs.length > 0 && (
+                    <div className="mt-3 max-h-32 overflow-y-auto bg-white rounded p-2 text-xs font-mono">
+                      {processingStatus.logs.slice(-5).map((log: any, i: number) => (
+                        <div key={i} className="text-[#8b7355]">
+                          {new Date(log.timestamp).toLocaleTimeString()}: {log.message}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
+
+            {files.length > 0 && (
+              <div className="mt-8">
+                <p className="text-sm text-[#8b7355] mb-4">{files.length} file(s) selected</p>
+                <div className="space-y-3 mb-6">
+                  {files.map((file, i) => (
+                    <div key={i} className="flex items-center gap-3 text-sm text-[#2d2520] bg-[#faf5ee] px-4 py-3 rounded-lg border border-[#e8dcc8]">
+                      <FileText className="w-5 h-5 text-[#c2652a]" />
+                      <span className="flex-1">{file.name}</span>
+                      <span className="text-[#8b7355]">({(file.size / 1024).toFixed(1)} KB)</span>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={processFiles}
+                  disabled={processing}
+                  className="w-full bg-[#c2652a] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#a85424] disabled:bg-[#b8a490] disabled:cursor-not-allowed transition-colors"
+                >
+                  {processing ? (
+                    <span className="flex items-center justify-center gap-3">
+                      <Activity className="w-6 h-6 animate-spin" />
+                      Processing...
+                    </span>
+                  ) : (
+                    'Process Files'
+                  )}
+                </button>
+              </div>
+            )}
+
+            {/* Knowledge Graph */}
+            <div className="mt-12">
+              <div className="flex items-center gap-3 mb-6">
+                <Network className="w-7 h-7 text-[#c2652a]" />
+                <h2 className="text-3xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
+                  Knowledge Graph
+                </h2>
+              </div>
+              <KnowledgeGraph nodes={graphData.nodes} links={graphData.links} />
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Chat Tab */}
+        {activeTab === 'chat' && (
+          <div className="bg-white border border-[#e8dcc8] rounded-lg overflow-hidden" style={{ height: 'calc(100vh - 400px)', minHeight: '500px' }}>
+            <div className="flex flex-col h-full">
+              {/* Chat Header */}
+              <div className="bg-[#faf5ee] border-b border-[#e8dcc8] p-6">
+                <div className="flex items-center gap-3">
+                  <Brain className="w-7 h-7 text-[#c2652a]" />
+                  <div>
+                    <h2 className="text-2xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
+                      AI Assistant
+                    </h2>
+                    <p className="text-sm text-[#8b7355]">Ask questions about your knowledge base</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chat Messages */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {chatHistory.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Brain className="w-16 h-16 text-[#b8a490] mx-auto mb-4" />
+                    <p className="text-lg text-[#8b7355] mb-2">No messages yet</p>
+                    <p className="text-sm text-[#b8a490]">Start by asking a question about your knowledge base</p>
+                  </div>
+                ) : (
+                  chatHistory.map((chat, i) => (
+                    <div key={i} className="space-y-4">
+                      {/* User Question */}
+                      <div className="flex justify-end">
+                        <div className="bg-[#c2652a] text-white rounded-lg px-6 py-3 max-w-2xl">
+                          <p className="text-sm">{chat.question}</p>
+                        </div>
+                      </div>
+                      {/* AI Answer */}
+                      <div className="flex justify-start">
+                        <div className="bg-[#faf5ee] border border-[#e8dcc8] rounded-lg px-6 py-4 max-w-2xl">
+                          <p className="text-sm text-[#2d2520] whitespace-pre-wrap">{chat.answer}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+                {chatLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-[#faf5ee] border border-[#e8dcc8] rounded-lg px-6 py-4">
+                      <Activity className="w-5 h-5 text-[#c2652a] animate-spin" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Chat Input */}
+              <div className="border-t border-[#e8dcc8] p-6">
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={chatQuestion}
+                    onChange={(e) => setChatQuestion(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && !chatLoading && askQuestion()}
+                    placeholder="Ask anything about your knowledge base..."
+                    className="flex-1 px-4 py-3 border border-[#e8dcc8] rounded-lg focus:outline-none focus:border-[#c2652a] text-[#2d2520]"
+                    disabled={chatLoading}
+                  />
+                  <button
+                    onClick={askQuestion}
+                    disabled={chatLoading || !chatQuestion}
+                    className="bg-[#c2652a] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#a85424] disabled:bg-[#b8a490] disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                  >
+                    {chatLoading ? 'Thinking...' : 'Send'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <footer className="mt-16 text-center">
