@@ -161,7 +161,28 @@ app.post('/api/fetch-url', async (req, res) => {
  */
 app.post('/api/upload', upload.array('files'), async (req, res) => {
   try {
-    const files = req.files.map(f => ({
+    const files = req.files;
+    
+    if (!files || files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded' });
+    }
+    
+    // Validate file sizes (max 10MB per file)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const oversizedFiles = files.filter(f => f.size > maxSize);
+    
+    if (oversizedFiles.length > 0) {
+      // Delete uploaded files
+      for (const file of files) {
+        await fs.unlink(file.path).catch(() => {});
+      }
+      return res.status(400).json({ 
+        error: 'Files too large (max 10MB per file)',
+        files: oversizedFiles.map(f => ({ name: f.originalname, size: f.size }))
+      });
+    }
+    
+    const fileList = files.map(f => ({
       name: f.originalname,
       size: f.size,
       path: f.path
@@ -169,7 +190,7 @@ app.post('/api/upload', upload.array('files'), async (req, res) => {
     
     res.json({ 
       success: true, 
-      files,
+      files: fileList,
       message: `Uploaded ${files.length} file(s)` 
     });
   } catch (error) {

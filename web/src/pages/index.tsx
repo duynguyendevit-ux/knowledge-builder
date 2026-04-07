@@ -75,7 +75,30 @@ export default function Home() {
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFiles(Array.from(e.target.files))
+      const selectedFiles = Array.from(e.target.files)
+      
+      // Validate file size (max 10MB per file)
+      const maxSize = 10 * 1024 * 1024 // 10MB
+      const oversizedFiles = selectedFiles.filter(f => f.size > maxSize)
+      
+      if (oversizedFiles.length > 0) {
+        alert(`Files too large (max 10MB):\n${oversizedFiles.map(f => `${f.name} (${(f.size / 1024 / 1024).toFixed(1)}MB)`).join('\n')}`)
+        return
+      }
+      
+      // Validate file type
+      const allowedTypes = ['.md', '.txt', '.docx', '.pdf']
+      const invalidFiles = selectedFiles.filter(f => {
+        const ext = '.' + f.name.split('.').pop()?.toLowerCase()
+        return !allowedTypes.includes(ext)
+      })
+      
+      if (invalidFiles.length > 0) {
+        alert(`Invalid file types:\n${invalidFiles.map(f => f.name).join('\n')}\n\nAllowed: ${allowedTypes.join(', ')}`)
+        return
+      }
+      
+      setFiles(selectedFiles)
     }
   }
 
