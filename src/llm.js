@@ -22,9 +22,10 @@ if (process.env.LLM_BASE_URL) {
 }
 
 // Initialize OpenRouter client
+const apiKey = process.env.OPENROUTER_API_KEY || config.llm.apiKey;
 const openrouter = new OpenAI({
   baseURL: config.llm.baseUrl || 'https://openrouter.ai/api/v1',
-  apiKey: config.llm.apiKey || process.env.OPENROUTER_API_KEY,
+  apiKey: apiKey,
   defaultHeaders: {
     'HTTP-Referer': 'https://github.com/duynguyendevit-ux/knowledge-builder',
     'X-Title': 'Knowledge Builder',
