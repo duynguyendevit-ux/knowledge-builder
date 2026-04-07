@@ -424,7 +424,7 @@ export default function Home() {
             <div className="flex flex-col h-full">
               {/* Chat Header */}
               <div className="bg-[#faf5ee] border-b border-[#e8dcc8] p-6">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mb-3">
                   <Brain className="w-7 h-7 text-[#c2652a]" />
                   <div>
                     <h2 className="text-2xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
@@ -432,6 +432,12 @@ export default function Home() {
                     </h2>
                     <p className="text-sm text-[#8b7355]">Ask questions about your knowledge base</p>
                   </div>
+                </div>
+                <div className="text-xs text-[#b8a490] space-y-1">
+                  <p><strong>Commands:</strong></p>
+                  <p>• <code className="bg-white px-1 rounded">/query "question"</code> - Search graph</p>
+                  <p>• <code className="bg-white px-1 rounded">/path "A" "B"</code> - Find path between concepts</p>
+                  <p>• <code className="bg-white px-1 rounded">/explain "concept"</code> - Detailed concept info</p>
                 </div>
               </div>
 
