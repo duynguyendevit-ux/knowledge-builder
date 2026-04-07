@@ -16,6 +16,7 @@ export default function Home() {
     connections: 0
   })
   const [graphData, setGraphData] = useState<{ nodes: any[], links: any[] }>({ nodes: [], links: [] })
+  const [processingStatus, setProcessingStatus] = useState<any>(null)
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
@@ -41,10 +42,28 @@ export default function Home() {
     }
   }
 
+  const fetchProcessingStatus = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/status`)
+      const data = await response.json()
+      setProcessingStatus(data)
+    } catch (error) {
+      console.error('Failed to fetch processing status:', error)
+    }
+  }
+
   // Fetch stats on mount
   useEffect(() => {
     fetchStats()
     fetchGraphData()
+    fetchProcessingStatus()
+    
+    // Poll status every 2 seconds when processing
+    const interval = setInterval(() => {
+      fetchProcessingStatus()
+    }, 2000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,6 +200,28 @@ export default function Home() {
               <p className="text-sm text-[#8b7355]">Supports: .md, .txt, .docx, .pdf</p>
             </label>
           </div>
+
+          {processingStatus?.isProcessing && (
+            <div className="mt-6 bg-[#faf5ee] border border-[#e8dcc8] rounded-lg p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <Activity className="w-5 h-5 text-[#c2652a] animate-spin" />
+                <p className="text-sm font-semibold text-[#2d2520]">Processing...</p>
+              </div>
+              <div className="space-y-2 text-sm text-[#8b7355]">
+                <p>Current: {processingStatus.currentFile || 'Initializing...'}</p>
+                <p>Progress: {processingStatus.processedFiles} / {processingStatus.totalFiles} files</p>
+                {processingStatus.logs.length > 0 && (
+                  <div className="mt-3 max-h-32 overflow-y-auto bg-white rounded p-2 text-xs font-mono">
+                    {processingStatus.logs.slice(-5).map((log: any, i: number) => (
+                      <div key={i} className="text-[#8b7355]">
+                        {new Date(log.timestamp).toLocaleTimeString()}: {log.message}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {files.length > 0 && (
             <div className="mt-8">
