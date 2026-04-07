@@ -1,0 +1,27 @@
+{
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-4",
+    "apiKey": ""
+  },
+  "paths": {
+    "raw": "./raw",
+    "wiki": "./wiki"
+  },
+  "processing": {
+    "autoSummarize": true,
+    "extractConcepts": true,
+    "findConnections": true,
+    "batchSize": 10
+  },
+  "obsidian": {
+    "frontmatter": true,
+    "tags": true,
+    "backlinks": true
+  },
+  "healthCheck": {
+    "checkInconsistencies": true,
+    "suggestMissing": true,
+    "findConnections": true
+  }
+}
