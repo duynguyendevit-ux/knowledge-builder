@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
+import { Maximize2, Minimize2 } from 'lucide-react'
 
 interface Node {
   id: string
@@ -20,12 +21,14 @@ interface KnowledgeGraphProps {
 
 export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
     if (!svgRef.current || nodes.length === 0) return
 
-    const width = 800
-    const height = 600
+    const width = isFullscreen ? window.innerWidth : 800
+    const height = isFullscreen ? window.innerHeight : 600
 
     // Clear previous graph
     d3.select(svgRef.current).selectAll('*').remove()
@@ -35,6 +38,17 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
       .attr('height', height)
       .attr('viewBox', [0, 0, width, height])
 
+    // Add zoom behavior
+    const g = svg.append('g')
+    
+    const zoom = d3.zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.1, 4])
+      .on('zoom', (event) => {
+        g.attr('transform', event.transform)
+      })
+    
+    svg.call(zoom as any)
+
     // Create simulation
     const simulation = d3.forceSimulation(nodes as any)
       .force('link', d3.forceLink(links).id((d: any) => d.id).distance(100))
@@ -43,7 +57,7 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
       .force('collision', d3.forceCollide().radius(40))
 
     // Create links
-    const link = svg.append('g')
+    const link = g.append('g')
       .selectAll('line')
       .data(links)
       .join('line')
@@ -52,7 +66,7 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
       .attr('stroke-opacity', 0.6)
 
     // Create nodes
-    const node = svg.append('g')
+    const node = g.append('g')
       .selectAll('g')
       .data(nodes)
       .join('g')
@@ -110,7 +124,7 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
     return () => {
       simulation.stop()
     }
-  }, [nodes, links])
+  }, [nodes, links, isFullscreen])
 
   if (nodes.length === 0) {
     return (
@@ -121,18 +135,45 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
   }
 
   return (
-    <div className="bg-white border border-[#e8dcc8] rounded-lg p-6 overflow-hidden">
-      <svg ref={svgRef} className="w-full" style={{ maxHeight: '600px' }} />
-      <div className="mt-4 flex items-center gap-6 text-sm text-[#8b7355]">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-[#c2652a]"></div>
-          <span>Concepts</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-[#8b7355]"></div>
-          <span>Summaries</span>
-        </div>
+    <div 
+      ref={containerRef}
+      className={`bg-white border border-[#e8dcc8] rounded-lg overflow-hidden ${
+        isFullscreen ? 'fixed inset-0 z-50' : 'relative'
+      }`}
+    >
+      <div className="absolute top-4 right-4 z-10">
+        <button
+          onClick={() => setIsFullscreen(!isFullscreen)}
+          className="bg-white border border-[#e8dcc8] rounded p-2 hover:bg-[#faf5ee] transition-colors"
+          title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+        >
+          {isFullscreen ? (
+            <Minimize2 className="w-5 h-5 text-[#c2652a]" />
+          ) : (
+            <Maximize2 className="w-5 h-5 text-[#c2652a]" />
+          )}
+        </button>
       </div>
+      
+      <div className={isFullscreen ? 'h-screen' : 'p-6'}>
+        <svg ref={svgRef} className="w-full" style={{ maxHeight: isFullscreen ? '100vh' : '600px' }} />
+      </div>
+      
+      {!isFullscreen && (
+        <div className="px-6 pb-6 flex items-center gap-6 text-sm text-[#8b7355]">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-[#c2652a]"></div>
+            <span>Concepts</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-[#8b7355]"></div>
+            <span>Summaries</span>
+          </div>
+          <div className="text-xs text-[#b8a490] ml-auto">
+            💡 Scroll to zoom • Drag to pan • Drag nodes to rearrange
+          </div>
+        </div>
+      )}
     </div>
   )
 }
