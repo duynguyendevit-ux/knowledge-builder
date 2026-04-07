@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react'
 import { Upload, FileText, Brain, Network, Activity } from 'lucide-react'
 import dynamic from 'next/dynamic'
+import Login from '../components/Login'
 
 const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), { ssr: false })
 
 export default function Home() {
+  const [token, setToken] = useState<string | null>(null)
   const [files, setFiles] = useState<File[]>([])
   const [processing, setProcessing] = useState(false)
   const [url, setUrl] = useState('')
@@ -27,10 +29,29 @@ export default function Home() {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
+  // Check for existing token on mount
+  useEffect(() => {
+    const savedToken = localStorage.getItem('kb_token')
+    if (savedToken) {
+      setToken(savedToken)
+    }
+  }, [])
+
+  // Show login if not authenticated
+  if (!token) {
+    return <Login onLogin={setToken} />
+  }
+
+  const getAuthHeaders = () => ({
+    'Authorization': `Bearer ${token}`
+  })
+
   const fetchStats = async () => {
     try {
       console.log('Fetching stats from:', `${API_URL}/api/stats`)
-      const response = await fetch(`${API_URL}/api/stats`)
+      const response = await fetch(`${API_URL}/api/stats`, {
+        headers: getAuthHeaders()
+      })
       const data = await response.json()
       console.log('Stats received:', data)
       setStats(data)
@@ -41,7 +62,9 @@ export default function Home() {
 
   const fetchGraphData = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/graph`)
+      const response = await fetch(`${API_URL}/api/graph`, {
+        headers: getAuthHeaders()
+      })
       const data = await response.json()
       setGraphData(data)
     } catch (error) {
@@ -51,7 +74,9 @@ export default function Home() {
 
   const fetchProcessingStatus = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/status`)
+      const response = await fetch(`${API_URL}/api/status`, {
+        headers: getAuthHeaders()
+      })
       const data = await response.json()
       setProcessingStatus(data)
     } catch (error) {
@@ -114,12 +139,14 @@ export default function Home() {
       
       await fetch(`${API_URL}/api/upload`, {
         method: 'POST',
+        headers: getAuthHeaders(),
         body: formData
       })
       
       // Trigger processing
       await fetch(`${API_URL}/api/process`, {
-        method: 'POST'
+        method: 'POST',
+        headers: getAuthHeaders()
       })
       
       // Wait a bit then refresh stats
@@ -143,14 +170,15 @@ export default function Home() {
     try {
       const response = await fetch(`${API_URL}/api/fetch-url`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ url })
       })
       
       if (response.ok) {
         // Trigger processing
         await fetch(`${API_URL}/api/process`, {
-          method: 'POST'
+          method: 'POST',
+          headers: getAuthHeaders()
         })
         
         setTimeout(() => {
@@ -178,7 +206,7 @@ export default function Home() {
     try {
       const response = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: chatQuestion })
       })
       

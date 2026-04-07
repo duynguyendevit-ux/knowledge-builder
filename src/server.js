@@ -9,6 +9,7 @@ import { processRawFiles } from './process.js';
 import { getProcessingStatus } from './status.js';
 import { chatWithKnowledge } from './chat.js';
 import { findPath, queryGraph, explainConcept } from './query.js';
+import { hashPassword, verifyPassword, generateToken, createSession, verifySession, removeSession } from './auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +20,20 @@ const PORT = process.env.PORT || 3002;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Password from environment variable (default for demo)
+const PASSWORD_HASH = process.env.KB_PASSWORD_HASH || hashPassword('admin123');
+
+// Auth middleware
+function requireAuth(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  
+  if (!token || !verifySession(token)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  next();
+}
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -37,9 +52,44 @@ const upload = multer({ storage });
 // Routes
 
 /**
+ * POST /api/login - Login with password
+ */
+app.post('/api/login', async (req, res) => {
+  try {
+    const { password } = req.body;
+    
+    if (!password) {
+      return res.status(400).json({ error: 'Password is required' });
+    }
+    
+    if (!verifyPassword(password, PASSWORD_HASH)) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+    
+    const token = generateToken();
+    createSession(token);
+    
+    res.json({ token, message: 'Login successful' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/logout - Logout
+ */
+app.post('/api/logout', (req, res) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (token) {
+    removeSession(token);
+  }
+  res.json({ message: 'Logged out' });
+});
+
+/**
  * GET /api/stats - Get knowledge base statistics
  */
-app.get('/api/stats', async (req, res) => {
+app.get('/api/stats', requireAuth, async (req, res) => {
   try {
     const stats = await getStats();
     res.json(stats);
@@ -51,7 +101,7 @@ app.get('/api/stats', async (req, res) => {
 /**
  * GET /api/summaries - List all summaries
  */
-app.get('/api/summaries', async (req, res) => {
+app.get('/api/summaries', requireAuth, async (req, res) => {
   try {
     const summaries = await listSummaries();
     res.json(summaries);
@@ -63,7 +113,7 @@ app.get('/api/summaries', async (req, res) => {
 /**
  * GET /api/concepts - List all concepts
  */
-app.get('/api/concepts', async (req, res) => {
+app.get('/api/concepts', requireAuth, async (req, res) => {
   try {
     const concepts = await listConcepts();
     res.json(concepts);
@@ -75,7 +125,7 @@ app.get('/api/concepts', async (req, res) => {
 /**
  * GET /api/graph - Get graph data for visualization
  */
-app.get('/api/graph', async (req, res) => {
+app.get('/api/graph', requireAuth, async (req, res) => {
   try {
     const graphData = await getGraphData();
     res.json(graphData);
@@ -87,7 +137,7 @@ app.get('/api/graph', async (req, res) => {
 /**
  * GET /api/status - Get processing status
  */
-app.get('/api/status', async (req, res) => {
+app.get('/api/status', requireAuth, async (req, res) => {
   try {
     const status = getProcessingStatus();
     res.json(status);
@@ -99,7 +149,7 @@ app.get('/api/status', async (req, res) => {
 /**
  * POST /api/chat - Chat with knowledge base
  */
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', requireAuth, async (req, res) => {
   try {
     const { question } = req.body;
     
@@ -181,7 +231,7 @@ app.post('/api/chat', async (req, res) => {
 /**
  * POST /api/fetch-url - Fetch content from URL using Jina Reader
  */
-app.post('/api/fetch-url', async (req, res) => {
+app.post('/api/fetch-url', requireAuth, async (req, res) => {
   try {
     const { url } = req.body;
     
@@ -224,7 +274,7 @@ app.post('/api/fetch-url', async (req, res) => {
 /**
  * POST /api/upload - Upload files
  */
-app.post('/api/upload', upload.array('files'), async (req, res) => {
+app.post('/api/upload', requireAuth, upload.array('files'), async (req, res) => {
   try {
     const files = req.files;
     
@@ -266,7 +316,7 @@ app.post('/api/upload', upload.array('files'), async (req, res) => {
 /**
  * POST /api/process - Process raw files
  */
-app.post('/api/process', async (req, res) => {
+app.post('/api/process', requireAuth, async (req, res) => {
   try {
     // Start processing in background
     processRawFiles().catch(console.error);
