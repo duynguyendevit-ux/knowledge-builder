@@ -23,12 +23,17 @@ export default function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    if (!svgRef.current || nodes.length === 0) return
+    setIsClient(true)
+  }, [])
 
-    const width = isFullscreen ? window.innerWidth : 800
-    const height = isFullscreen ? window.innerHeight : 600
+  useEffect(() => {
+    if (!isClient || !svgRef.current || nodes.length === 0) return
+
+    const width = isFullscreen ? (typeof window !== 'undefined' ? window.innerWidth : 800) : 800
+    const height = isFullscreen ? (typeof window !== 'undefined' ? window.innerHeight : 600) : 600
 
     // Clear previous graph
     d3.select(svgRef.current).selectAll('*').remove()
