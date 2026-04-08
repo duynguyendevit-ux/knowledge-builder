@@ -37,35 +37,6 @@ export default function Home() {
     'Authorization': `Bearer ${token}`
   })
 
-  // Check for existing token on mount
-  useEffect(() => {
-    setIsClient(true)
-    if (typeof window !== 'undefined') {
-      const savedToken = localStorage.getItem('kb_token')
-      if (savedToken) {
-        setToken(savedToken)
-      }
-    }
-  }, [])
-
-  // Fetch data when token is available
-  useEffect(() => {
-    if (token && isClient) {
-      fetchStats()
-      fetchGraphData()
-    }
-  }, [token, isClient])
-
-  // Don't render until client-side
-  if (!isClient) {
-    return null
-  }
-
-  // Show login if not authenticated
-  if (!token) {
-    return <Login onLogin={setToken} />
-  }
-
   const fetchStats = async () => {
     try {
       console.log('Fetching stats from:', `${API_URL}/api/stats`)
@@ -104,19 +75,34 @@ export default function Home() {
     }
   }
 
-  // Fetch stats on mount
+  // Check for existing token on mount
   useEffect(() => {
-    fetchStats()
-    fetchGraphData()
-    fetchProcessingStatus()
-    
-    // Poll status every 2 seconds when processing
-    const interval = setInterval(() => {
-      fetchProcessingStatus()
-    }, 2000)
-    
-    return () => clearInterval(interval)
+    setIsClient(true)
+    if (typeof window !== 'undefined') {
+      const savedToken = localStorage.getItem('kb_token')
+      if (savedToken) {
+        setToken(savedToken)
+      }
+    }
   }, [])
+
+  // Fetch data when token is available
+  useEffect(() => {
+    if (token && isClient) {
+      fetchStats()
+      fetchGraphData()
+    }
+  }, [token, isClient])
+
+  // Don't render until client-side
+  if (!isClient) {
+    return null
+  }
+
+  // Show login if not authenticated
+  if (!token) {
+    return <Login onLogin={setToken} />
+  }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
