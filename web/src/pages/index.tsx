@@ -44,6 +44,14 @@ export default function Home() {
     }
   }, [])
 
+  // Fetch data when token is available
+  useEffect(() => {
+    if (token && isClient) {
+      fetchStats()
+      fetchGraphData()
+    }
+  }, [token, isClient])
+
   // Don't render until client-side
   if (!isClient) {
     return null
