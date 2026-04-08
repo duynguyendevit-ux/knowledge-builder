@@ -33,6 +33,10 @@ export default function Home() {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
+  const getAuthHeaders = () => ({
+    'Authorization': `Bearer ${token}`
+  })
+
   // Check for existing token on mount
   useEffect(() => {
     setIsClient(true)
@@ -61,10 +65,6 @@ export default function Home() {
   if (!token) {
     return <Login onLogin={setToken} />
   }
-
-  const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${token}`
-  })
 
   const fetchStats = async () => {
     try {
