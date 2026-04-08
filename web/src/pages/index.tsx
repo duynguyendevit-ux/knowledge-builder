@@ -5,7 +5,10 @@ import { Upload, FileText, Brain, Network, Activity } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Login from '../components/Login'
 
-const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), { ssr: false })
+const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), { 
+  ssr: false,
+  loading: () => <div className="flex items-center justify-center h-96"><div className="text-[#8b7355]">Loading graph...</div></div>
+})
 
 export default function Home() {
   const [token, setToken] = useState<string | null>(null)
