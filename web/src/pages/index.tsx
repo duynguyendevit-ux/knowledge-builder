@@ -31,9 +31,11 @@ export default function Home() {
 
   // Check for existing token on mount
   useEffect(() => {
-    const savedToken = localStorage.getItem('kb_token')
-    if (savedToken) {
-      setToken(savedToken)
+    if (typeof window !== 'undefined') {
+      const savedToken = localStorage.getItem('kb_token')
+      if (savedToken) {
+        setToken(savedToken)
+      }
     }
   }, [])
 

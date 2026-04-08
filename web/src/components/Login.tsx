@@ -25,7 +25,9 @@ export default function Login({ onLogin }: { onLogin: (token: string) => void })
       const data = await response.json()
 
       if (response.ok) {
-        localStorage.setItem('kb_token', data.token)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('kb_token', data.token)
+        }
         onLogin(data.token)
       } else {
         setError(data.error || 'Login failed')
