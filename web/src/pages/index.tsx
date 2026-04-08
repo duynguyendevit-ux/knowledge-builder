@@ -9,6 +9,7 @@ const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), { s
 
 export default function Home() {
   const [token, setToken] = useState<string | null>(null)
+  const [isClient, setIsClient] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [processing, setProcessing] = useState(false)
   const [url, setUrl] = useState('')
@@ -31,6 +32,7 @@ export default function Home() {
 
   // Check for existing token on mount
   useEffect(() => {
+    setIsClient(true)
     if (typeof window !== 'undefined') {
       const savedToken = localStorage.getItem('kb_token')
       if (savedToken) {
@@ -38,6 +40,11 @@ export default function Home() {
       }
     }
   }, [])
+
+  // Don't render until client-side
+  if (!isClient) {
+    return null
+  }
 
   // Show login if not authenticated
   if (!token) {
