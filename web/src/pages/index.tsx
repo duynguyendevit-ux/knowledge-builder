@@ -112,7 +112,7 @@ export default function Home() {
       }
       
       // Validate file type
-      const allowedTypes = ['.md', '.txt', '.docx', '.pdf']
+      const allowedTypes = ['.md', '.txt', '.docx', '.pdf', '.jpg', '.jpeg', '.png', '.webp', '.gif']
       const invalidFiles = selectedFiles.filter(f => {
         const ext = '.' + f.name.split('.').pop()?.toLowerCase()
         return !allowedTypes.includes(ext)

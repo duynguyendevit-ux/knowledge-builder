@@ -297,6 +297,25 @@ app.post('/api/upload', requireAuth, upload.array('files'), async (req, res) => 
       });
     }
     
+    // Validate file types
+    const allowedTypes = ['.md', '.txt', '.docx', '.pdf', '.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    const invalidFiles = files.filter(f => {
+      const ext = path.extname(f.originalname).toLowerCase();
+      return !allowedTypes.includes(ext);
+    });
+    
+    if (invalidFiles.length > 0) {
+      // Delete uploaded files
+      for (const file of files) {
+        await fs.unlink(file.path).catch(() => {});
+      }
+      return res.status(400).json({ 
+        error: 'Invalid file types',
+        files: invalidFiles.map(f => ({ name: f.originalname })),
+        allowed: allowedTypes
+      });
+    }
+    
     const fileList = files.map(f => ({
       name: f.originalname,
       size: f.size,

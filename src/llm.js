@@ -36,14 +36,30 @@ const openrouter = new OpenAI({
 /**
  * Call LLM with a prompt
  */
-export async function callLLM(prompt, systemPrompt = null) {
+export async function callLLM(prompt, systemPrompt = null, options = {}) {
   const messages = [];
   
   if (systemPrompt) {
     messages.push({ role: 'system', content: systemPrompt });
   }
   
-  messages.push({ role: 'user', content: prompt });
+  // Handle image input
+  if (options.image) {
+    messages.push({
+      role: 'user',
+      content: [
+        { type: 'text', text: prompt },
+        {
+          type: 'image_url',
+          image_url: {
+            url: `data:${options.image.mimeType};base64,${options.image.data}`
+          }
+        }
+      ]
+    });
+  } else {
+    messages.push({ role: 'user', content: prompt });
+  }
 
   try {
     const response = await openrouter.chat.completions.create({
