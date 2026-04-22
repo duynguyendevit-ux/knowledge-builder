@@ -1,0 +1,80 @@
+{
+  "example-ml.md": {
+    "hash": "0db340fe91c9d4787b03b8728ad590c0da63bd7a299276bc2218c8e6ae57a024",
+    "processedAt": "2026-04-08T02:53:37.101Z",
+    "concepts": 13,
+    "hasSummary": true
+  },
+  "github-com-1775555033241.md": {
+    "hash": "92e0f9fc692656a6dd00b05f57b3d2c468c39a30284dd4f4b3ddb728b4aa2bf0",
+    "processedAt": "2026-04-08T02:53:49.272Z",
+    "concepts": 10,
+    "hasSummary": true
+  },
+  "github-com-1775555046815.md": {
+    "hash": "92e0f9fc692656a6dd00b05f57b3d2c468c39a30284dd4f4b3ddb728b4aa2bf0",
+    "processedAt": "2026-04-08T02:54:09.553Z",
+    "concepts": 8,
+    "hasSummary": true
+  },
+  "github-com-1775616709773.md": {
+    "hash": "7bfce4687ef1180f45ce104bf9cde491cc1776f9dd8fe85fe896ec94f468bb58",
+    "processedAt": "2026-04-08T02:56:03.149Z",
+    "concepts": 10,
+    "hasSummary": true
+  },
+  "github-com-1775616775581.md": {
+    "hash": "f81d91db70bc6763b297b4ab19588de7df1b1a94bbd4bb7de7fbb70cf7665117",
+    "processedAt": "2026-04-08T02:54:36.844Z",
+    "concepts": 5,
+    "hasSummary": true
+  },
+  "lottery-analysis.docx": {
+    "hash": "67f80fe54edcc15bdba3533c033dcaa547a643f2acc16ca34341ced30f513369",
+    "processedAt": "2026-04-08T02:55:15.163Z",
+    "concepts": 9,
+    "hasSummary": true
+  },
+  "github-com-1775616799303.md": {
+    "hash": "205677da793b60a7f4b2265be220c0dc6b815297d56a21180fd611c06a6dd468",
+    "processedAt": "2026-04-08T02:56:27.354Z",
+    "concepts": 14,
+    "hasSummary": true
+  },
+  "skill-creator.txt": {
+    "hash": "d6c8c542064dc0db1eb847c450ed4422d4d02585feac1b4e512c74910c176a3b",
+    "processedAt": "2026-04-08T02:55:35.718Z",
+    "concepts": 9,
+    "hasSummary": true
+  },
+  "github-com-1775616808393.md": {
+    "hash": "205677da793b60a7f4b2265be220c0dc6b815297d56a21180fd611c06a6dd468",
+    "processedAt": "2026-04-08T02:55:59.749Z",
+    "concepts": 10,
+    "hasSummary": true
+  },
+  "successful-software-engineer.txt": {
+    "hash": "72ae42e3215a86570506c13b1aa814e1802104eb684a4f54a0a6396f5b42084c",
+    "processedAt": "2026-04-08T02:58:17.911Z",
+    "concepts": 10,
+    "hasSummary": true
+  },
+  "superpowers.txt": {
+    "hash": "09a1d6cfd3d9b3efd7b18bf2fc9782b605a905a504509a7b9d63309f82c28de1",
+    "processedAt": "2026-04-08T02:57:12.440Z",
+    "concepts": 8,
+    "hasSummary": true
+  },
+  "github-com-1775616835641.md": {
+    "hash": "fe3628278ef5aec68f298854a8d2aeae763f0088ad55775b31bdf50432147db3",
+    "processedAt": "2026-04-08T02:57:02.635Z",
+    "concepts": 9,
+    "hasSummary": true
+  },
+  "what-really-makes-a-succesful-software.txt": {
+    "hash": "72ae42e3215a86570506c13b1aa814e1802104eb684a4f54a0a6396f5b42084c",
+    "processedAt": "2026-04-08T02:59:28.409Z",
+    "concepts": 10,
+    "hasSummary": true
+  }
+}

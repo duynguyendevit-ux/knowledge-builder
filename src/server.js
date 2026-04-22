@@ -10,6 +10,7 @@ import { getProcessingStatus } from './status.js';
 import { chatWithKnowledge } from './chat.js';
 import { findPath, queryGraph, explainConcept } from './query.js';
 import { hashPassword, verifyPassword, generateToken, createSession, verifySession, removeSession } from './auth.js';
+import { getAllTopics } from './topics.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -141,6 +142,19 @@ app.get('/api/status', requireAuth, async (req, res) => {
   try {
     const status = getProcessingStatus();
     res.json(status);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/topics - Get all topics with grouped concepts
+ */
+app.get('/api/topics', requireAuth, async (req, res) => {
+  try {
+    const wikiDir = path.join(__dirname, '..', 'wiki');
+    const topics = await getAllTopics(wikiDir);
+    res.json(topics);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
