@@ -224,7 +224,10 @@ export default function Topics() {
                   <div className="border-t border-[#d4c5a9] p-6 bg-white">
                     <h3 className="text-lg font-serif text-[#2c2416] mb-4">Knowledge Graph</h3>
                     <div className="h-[500px] border border-[#d4c5a9] rounded">
-                      <KnowledgeGraph data={getTopicGraphData(topic)} />
+                      <KnowledgeGraph 
+                        nodes={getTopicGraphData(topic).nodes} 
+                        links={getTopicGraphData(topic).links} 
+                      />
                     </div>
                   </div>
                 )}
