@@ -352,7 +352,12 @@ app.post('/api/upload', upload.array('files'), async (req, res) => {
 app.post('/api/process', async (req, res) => {
   try {
     // Start processing in background
-    processRawFiles().catch(console.error);
+    processRawFiles().then(async () => {
+      console.log('✅ File processing complete, generating topics...');
+      const { generateAndCacheTopics } = await import('./topic-generator.js');
+      const wikiDir = path.join(__dirname, '..', 'wiki');
+      await generateAndCacheTopics(wikiDir);
+    }).catch(console.error);
     
     res.json({ 
       success: true, 

@@ -76,7 +76,15 @@ Return ONLY the JSON array, no other text.`;
  */
 export async function getAllTopics(wikiDir) {
   try {
-    // Read all concepts
+    // Try to load cached topics first
+    const { loadCachedTopics } = await import('./topic-generator.js');
+    const cachedTopics = await loadCachedTopics();
+    
+    if (cachedTopics && cachedTopics.length > 0) {
+      return cachedTopics;
+    }
+    
+    // Fallback: Read all concepts for alphabetical grouping
     const conceptsDir = path.join(wikiDir, 'concepts');
     const conceptFiles = await fs.readdir(conceptsDir);
     
@@ -103,7 +111,7 @@ export async function getAllTopics(wikiDir) {
       }
     }
     
-    // Alphabetical grouping (LLM disabled due to Cloudflare blocking)
+    // Alphabetical grouping (fallback)
     const grouped = {};
     for (const concept of concepts) {
       const firstLetter = concept.name[0].toUpperCase();
