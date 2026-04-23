@@ -47,17 +47,17 @@ export default function ArticleDetail() {
     const headings: {id: string, text: string, level: number}[] = []
     const lines = content.split('\n')
     
-    lines.forEach((line, index) => {
+    lines.forEach((line) => {
       const h2Match = line.match(/^## (.+)$/)
       const h3Match = line.match(/^### (.+)$/)
       
       if (h2Match) {
         const text = h2Match[1]
-        const id = `heading-${index}`
+        const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
         headings.push({ id, text, level: 2 })
       } else if (h3Match) {
         const text = h3Match[1]
-        const id = `heading-${index}`
+        const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
         headings.push({ id, text, level: 3 })
       }
     })
