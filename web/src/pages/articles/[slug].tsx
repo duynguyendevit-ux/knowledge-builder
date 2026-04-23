@@ -84,26 +84,26 @@ export default function ArticleDetail() {
     <div className="min-h-screen bg-[#faf8f3]">
       {/* Header */}
       <div className="bg-white border-b border-[#d4c5a9]">
-        <div className="max-w-4xl mx-auto px-6 py-6">
+        <div className="max-w-4xl mx-auto px-6 py-4">
           <button
             onClick={() => router.push('/articles')}
-            className="flex items-center gap-2 text-[#8b7355] hover:text-[#2c2416] transition-colors mb-4"
+            className="flex items-center gap-1.5 text-sm text-[#8b7355] hover:text-[#2c2416] transition-colors mb-3"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4" />
             <span>Back to Articles</span>
           </button>
           
-          <h1 className="text-4xl font-serif text-[#2c2416] mb-4">
+          <h1 className="text-2xl font-serif text-[#2c2416] mb-3">
             {article.title}
           </h1>
           
-          <div className="flex items-center gap-6 text-sm text-[#8b7355]">
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
+          <div className="flex items-center gap-4 text-xs text-[#8b7355]">
+            <div className="flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5" />
               <span>{article.concepts} concepts</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" />
               <span>Generated {formatDate(article.generated)}</span>
             </div>
           </div>

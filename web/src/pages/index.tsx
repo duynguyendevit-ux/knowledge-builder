@@ -223,33 +223,32 @@ export default function Home() {
     <div className="min-h-screen bg-[#faf5ee]" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
       <header className="bg-white border-b border-[#e8dcc8]">
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Brain className="w-10 h-10 text-[#c2652a]" />
+            <div className="flex items-center gap-3">
+              <Brain className="w-8 h-8 text-[#c2652a]" />
               <div>
-                <h1 className="text-4xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
+                <h1 className="text-2xl font-bold text-[#2d2520]" style={{ fontFamily: 'EB Garamond, serif' }}>
                   Knowledge Builder
                 </h1>
-                <p className="text-sm text-[#8b7355] mt-1">AI-powered knowledge management</p>
+                <p className="text-xs text-[#8b7355] mt-0.5">AI-powered knowledge management</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => window.location.href = '/topics'}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
               >
-                <Network className="w-5 h-5" />
+                <Network className="w-4 h-4" />
                 Topics
               </button>
               <button
                 onClick={() => window.location.href = '/articles'}
-                className="flex items-center gap-2 px-4 py-2 bg-[#8b7355] text-white rounded hover:bg-[#2c2416] transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-[#8b7355] text-white rounded hover:bg-[#2c2416] transition-colors"
               >
-                <BookOpen className="w-5 h-5" />
+                <BookOpen className="w-4 h-4" />
                 Articles
               </button>
-              <div className="text-xs text-[#b8a490]">v1.0.0</div>
             </div>
           </div>
         </div>
