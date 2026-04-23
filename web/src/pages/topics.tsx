@@ -303,10 +303,26 @@ export default function Topics() {
                 ×
               </button>
             </div>
-            <div className="p-6 overflow-y-auto prose prose-slate max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {articleContent}
-              </ReactMarkdown>
+            <div className="p-6 overflow-y-auto">
+              <div className="prose prose-slate max-w-none
+                prose-headings:text-[#2c2416] prose-headings:font-serif
+                prose-h1:text-3xl prose-h1:mb-4
+                prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
+                prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+                prose-p:text-[#4a4a4a] prose-p:leading-relaxed prose-p:mb-4
+                prose-strong:text-[#2c2416] prose-strong:font-semibold
+                prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-4
+                prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-4
+                prose-li:text-[#4a4a4a] prose-li:mb-2
+                prose-code:bg-[#f5f1e8] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                prose-pre:bg-[#2c2416] prose-pre:text-white prose-pre:p-4 prose-pre:rounded prose-pre:overflow-x-auto
+                prose-a:text-[#8b7355] prose-a:underline hover:prose-a:text-[#2c2416]
+                prose-blockquote:border-l-4 prose-blockquote:border-[#d4c5a9] prose-blockquote:pl-4 prose-blockquote:italic
+              ">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {articleContent}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         </div>
