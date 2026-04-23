@@ -14,6 +14,9 @@ export default function Topics() {
   const router = useRouter()
   const [token, setToken] = useState<string | null>('public')
   const [topics, setTopics] = useState<any[]>([])
+  const [articles, setArticles] = useState<any[]>([])
+  const [selectedArticle, setSelectedArticle] = useState<string | null>(null)
+  const [articleContent, setArticleContent] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set())
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null)
@@ -27,8 +30,43 @@ export default function Topics() {
   useEffect(() => {
     if (token) {
       fetchTopics()
+      fetchArticles()
     }
   }, [token])
+
+  const fetchArticles = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/articles`)
+      
+      if (!response.ok) {
+        console.error('Failed to fetch articles:', response.status)
+        setArticles([])
+        return
+      }
+      
+      const data = await response.json()
+      setArticles(Array.isArray(data) ? data : [])
+    } catch (error) {
+      console.error('Failed to fetch articles:', error)
+      setArticles([])
+    }
+  }
+
+  const loadArticle = async (filename: string) => {
+    try {
+      const response = await fetch(`${API_URL}/api/articles/${filename}`)
+      const data = await response.json()
+      setArticleContent(data.content)
+      setSelectedArticle(filename)
+    } catch (error) {
+      console.error('Failed to load article:', error)
+    }
+  }
+
+  const getArticleForTopic = (topicName: string) => {
+    const slug = topicName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    return articles.find(a => a.filename.includes(slug))
+  }
 
   const fetchTopics = async () => {
     try {
@@ -161,6 +199,19 @@ export default function Topics() {
                       <p className="text-[#8b7355] leading-relaxed">{topic.summary}</p>
                     </div>
                     <div className="flex items-center gap-2 ml-4">
+                      {getArticleForTopic(topic.name) && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            const article = getArticleForTopic(topic.name)
+                            if (article) loadArticle(article.filename)
+                          }}
+                          className="p-2 hover:bg-[#d4c5a9] rounded transition-colors"
+                          title="View Article"
+                        >
+                          <BookOpen className="w-5 h-5 text-[#8b7355]" />
+                        </button>
+                      )}
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
@@ -233,6 +284,31 @@ export default function Topics() {
           </div>
         )}
       </div>
+
+      {/* Article Modal */}
+      {selectedArticle && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-[#d4c5a9] flex items-center justify-between">
+              <h2 className="text-2xl font-serif text-[#2c2416]">Article</h2>
+              <button
+                onClick={() => {
+                  setSelectedArticle(null)
+                  setArticleContent('')
+                }}
+                className="text-[#8b7355] hover:text-[#2c2416] text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto prose prose-sm max-w-none">
+              <div className="whitespace-pre-wrap font-mono text-sm">
+                {articleContent}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
