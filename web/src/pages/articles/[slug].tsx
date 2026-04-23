@@ -200,7 +200,21 @@ export default function ArticleDetail() {
                 [&_pre]:bg-[#2c2416] [&_pre]:text-white [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:mb-6
                 [&_a]:text-[#8b7355] [&_a]:underline hover:[&_a]:text-[#2c2416]
               ">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h2: ({node, ...props}) => {
+                      const text = props.children?.toString() || ''
+                      const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                      return <h2 id={id} {...props} />
+                    },
+                    h3: ({node, ...props}) => {
+                      const text = props.children?.toString() || ''
+                      const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                      return <h3 id={id} {...props} />
+                    }
+                  }}
+                >
                   {content}
                 </ReactMarkdown>
               </div>
