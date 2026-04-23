@@ -1,0 +1,831 @@
+{
+  "timestamp": 1776919530544,
+  "topics": [
+    {
+      "name": "AI Development and Tools",
+      "summary": "97 concepts related to AI Development and Tools",
+      "concepts": [
+        "Add-ons and Pricing",
+        "Agentic Skills",
+        "AI Agent",
+        "AI Code Creation",
+        "AI Code",
+        "AI Gallery",
+        "AI Skills",
+        "API Development",
+        "API Management",
+        "API Platform",
+        "Application Security",
+        "Benchmarking",
+        "Burnout",
+        "Career Growth",
+        "Career Longevity",
+        "CI/CD Pipelines",
+        "CI/CD",
+        "Claude Context",
+        "Claude",
+        "Code Planning",
+        "Code Review",
+        "Codebase Contextualization",
+        "Collaborative Development",
+        "Communication Skills",
+        "Communication",
+        "Community Support",
+        "Company Size Solutions",
+        "Computer Vision",
+        "Constructive Feedback",
+        "Continuous Learning",
+        "Cost Effectiveness",
+        "Criticism Acceptance",
+        "Data Science",
+        "Developer Workflows",
+        "DevOps Methodology",
+        "DevOps",
+        "DevSecOps",
+        "Effective Communication",
+        "Eternal Student Mindset",
+        "Eternal Student",
+        "Evaluation Metrics",
+        "Feedback Culture",
+        "Feedback Reception",
+        "Feedback",
+        "GenAI Use Cases",
+        "GenAI Use",
+        "GenAI",
+        "GitHub Actions",
+        "GitHub Advanced Security",
+        "GitHub Community",
+        "GitHub Copilot",
+        "GitHub Features",
+        "GitHub Gallery",
+        "GitHub Platform",
+        "GitHub Repository",
+        "GitHub Sponsors",
+        "GitHub",
+        "Google AI Edge",
+        "Growth Mindset",
+        "Image Recognition",
+        "Industry Solutions",
+        "Intent Capture",
+        "Model Context Protocol",
+        "Natural Language",
+        "Neural Networks",
+        "Nha Cai",
+        "Open Source Community",
+        "Open Source",
+        "OpenAI API",
+        "Operator Result Control",
+        "Passive Skills",
+        "Postman Collection",
+        "Postman Inc",
+        "Postman",
+        "Pricing Model",
+        "Progressive Disclosure",
+        "Quy Luật Số",
+        "Recommendation Systems",
+        "Resilience",
+        "Security Lab",
+        "Security",
+        "Skill Creator",
+        "Skill Development",
+        "Skill Evaluation",
+        "SKILL.md",
+        "Skill Optimization",
+        "Software Development",
+        "Software Engineer",
+        "Statistics",
+        "Supervised Learning",
+        "Symmetrical Structure",
+        "Technical Skills",
+        "Ticket Block Structure",
+        "Topic Exploration",
+        "Unsupervised Learning",
+        "User Feedback",
+        "Zilliz Cloud"
+      ],
+      "conceptDetails": [
+        {
+          "name": "Add-ons and Pricing",
+          "description": "Additional features and pricing options",
+          "file": "add-ons-and-pricing.md"
+        },
+        {
+          "name": "Agentic Skills",
+          "description": "A framework that enables individuals to develop skills and expertise in a specific area.",
+          "file": "agentic-skills.md"
+        },
+        {
+          "name": "AI Agent",
+          "description": "A program that uses AI to perform tasks or functions autonomously.",
+          "file": "ai-agent.md"
+        },
+        {
+          "name": "AI Code Creation",
+          "description": "The use of artificial intelligence to generate and improve code, making software development more efficient and effective.",
+          "file": "ai-code-creation.md"
+        },
+        {
+          "name": "AI Code",
+          "description": "AI-powered code creation tools",
+          "file": "ai-code.md"
+        },
+        {
+          "name": "AI Gallery",
+          "description": "A collection of on-device ML and GenAI use cases and models that can be tried and used locally.",
+          "file": "ai-gallery.md"
+        },
+        {
+          "name": "AI Skills",
+          "description": "Reusable pieces of code that enable AI agents to perform specific tasks or functions.",
+          "file": "ai-skills.md"
+        },
+        {
+          "name": "API Development",
+          "description": "The process of creating and building APIs",
+          "file": "api-development.md"
+        },
+        {
+          "name": "API Management",
+          "description": "The process of managing and maintaining APIs",
+          "file": "api-management.md"
+        },
+        {
+          "name": "API Platform",
+          "description": "A platform for building and using APIs",
+          "file": "api-platform.md"
+        },
+        {
+          "name": "Application Security",
+          "description": "The practice of protecting software applications from security threats and vulnerabilities.",
+          "file": "application-security.md"
+        },
+        {
+          "name": "Benchmarking",
+          "description": "The process of comparing the performance of AI skills against established standards or benchmarks.",
+          "file": "benchmarking.md"
+        },
+        {
+          "name": "Burnout",
+          "description": "A state of emotional, mental, and physical exhaustion caused by prolonged stress",
+          "file": "burnout.md"
+        },
+        {
+          "name": "Career Growth",
+          "description": "The process of advancing in one's career, acquiring new skills, and taking on new challenges and responsibilities.",
+          "file": "career-growth.md"
+        },
+        {
+          "name": "Career Longevity",
+          "description": "The ability to maintain a successful and fulfilling career in software engineering over time.",
+          "file": "career-longevity.md"
+        },
+        {
+          "name": "CI/CD Pipelines",
+          "description": "Continuous integration and continuous delivery pipelines.",
+          "file": "ci-cd-pipelines.md"
+        },
+        {
+          "name": "CI/CD",
+          "description": "A set of practices that combines continuous integration and continuous delivery.",
+          "file": "ci-cd.md"
+        },
+        {
+          "name": "Claude Context",
+          "description": "A code search MCP plugin that adds semantic code search to Claude Code and other AI coding agents",
+          "file": "claude-context.md"
+        },
+        {
+          "name": "Claude",
+          "description": "An AI system that utilizes skills to interact with users and complete tasks.",
+          "file": "claude.md"
+        },
+        {
+          "name": "Code Planning",
+          "description": "The process of designing and planning code before writing it",
+          "file": "code-planning.md"
+        },
+        {
+          "name": "Code Review",
+          "description": "The process of examining and evaluating code to ensure its quality and reliability.",
+          "file": "code-review.md"
+        },
+        {
+          "name": "Codebase Contextualization",
+          "description": "The process of providing context to AI coding agents from the entire codebase",
+          "file": "codebase-contextualization.md"
+        },
+        {
+          "name": "Collaborative Development",
+          "description": "Working together on software development projects.",
+          "file": "collaborative-development.md"
+        },
+        {
+          "name": "Communication Skills",
+          "description": "The ability to effectively convey ideas, thoughts, and opinions to others",
+          "file": "communication-skills.md"
+        },
+        {
+          "name": "Communication",
+          "description": "The ability to effectively convey and receive information, ideas, and feedback.",
+          "file": "communication.md"
+        },
+        {
+          "name": "Community Support",
+          "description": "Resources and services provided by GitHub to support its community of developers, including documentation, forums, and support teams.",
+          "file": "community-support.md"
+        },
+        {
+          "name": "Company Size Solutions",
+          "description": "Solutions tailored to different company sizes",
+          "file": "company-size-solutions.md"
+        },
+        {
+          "name": "Computer Vision",
+          "description": "Computer vision is a field of study that focuses on enabling computers to interpret and understand visual data from the world.",
+          "file": "computer-vision.md"
+        },
+        {
+          "name": "Constructive Feedback",
+          "description": "The ability to give and receive feedback that is helpful, respectful, and focused on improving code, processes, or skills.",
+          "file": "constructive-feedback.md"
+        },
+        {
+          "name": "Continuous Learning",
+          "description": "The ongoing process of acquiring new knowledge, skills, and experiences to stay up-to-date with industry developments.",
+          "file": "continuous-learning.md"
+        },
+        {
+          "name": "Cost Effectiveness",
+          "description": "The ability of Claude Context to reduce costs by efficiently storing and searching codebases",
+          "file": "cost-effectiveness.md"
+        },
+        {
+          "name": "Criticism Acceptance",
+          "description": "The ability to receive and learn from feedback and criticism.",
+          "file": "criticism-acceptance.md"
+        },
+        {
+          "name": "Data Science",
+          "description": "Data science is a field of study that combines statistics, computer science, and domain-specific knowledge to extract insights from data.",
+          "file": "data-science.md"
+        },
+        {
+          "name": "Developer Workflows",
+          "description": "The processes and tools used by developers to manage their work",
+          "file": "developer-workflows.md"
+        },
+        {
+          "name": "DevOps Methodology",
+          "description": "A set of practices that combines software development and operations to improve the speed and quality of software releases.",
+          "file": "devops-methodology.md"
+        },
+        {
+          "name": "DevOps",
+          "description": "A set of practices that combines software development and operations",
+          "file": "devops.md"
+        },
+        {
+          "name": "DevSecOps",
+          "description": "Integrating security into the development and operations process.",
+          "file": "devsecops.md"
+        },
+        {
+          "name": "Effective Communication",
+          "description": "The ability to clearly and effectively convey ideas, plans, and intentions to colleagues, team members, or stakeholders.",
+          "file": "effective-communication.md"
+        },
+        {
+          "name": "Eternal Student Mindset",
+          "description": "The willingness to continuously learn, adapt, and update one's knowledge and skills in response to changing technology and industry developments.",
+          "file": "eternal-student-mindset.md"
+        },
+        {
+          "name": "Eternal Student",
+          "description": "The mindset of being open to continuous learning and growth, recognizing that knowledge and skills can become outdated.",
+          "file": "eternal-student.md"
+        },
+        {
+          "name": "Evaluation Metrics",
+          "description": "Quantitative and qualitative measures used to assess the performance and effectiveness of AI skills.",
+          "file": "evaluation-metrics.md"
+        },
+        {
+          "name": "Feedback Culture",
+          "description": "The ability to give and receive constructive feedback to improve code, collaborate with others, and learn from experiences.",
+          "file": "feedback-culture.md"
+        },
+        {
+          "name": "Feedback Reception",
+          "description": "The ability to receive and act upon constructive criticism, using it as an opportunity for growth and improvement.",
+          "file": "feedback-reception.md"
+        },
+        {
+          "name": "Feedback",
+          "description": "The process of giving and receiving constructive criticism and suggestions for improvement.",
+          "file": "feedback.md"
+        },
+        {
+          "name": "GenAI Use Cases",
+          "description": "Various applications of general artificial intelligence.",
+          "file": "genai-use-cases.md"
+        },
+        {
+          "name": "GenAI Use",
+          "description": "General artificial intelligence use cases.",
+          "file": "genai-use.md"
+        },
+        {
+          "name": "GenAI",
+          "description": "A type of artificial intelligence that generates new content, such as text or images, based on a given prompt or input.",
+          "file": "genai.md"
+        },
+        {
+          "name": "GitHub Actions",
+          "description": "A platform for automating and managing development workflows",
+          "file": "github-actions.md"
+        },
+        {
+          "name": "GitHub Advanced Security",
+          "description": "Enterprise-grade security features for protecting code and applications",
+          "file": "github-advanced-security.md"
+        },
+        {
+          "name": "GitHub Community",
+          "description": "The community of developers and users surrounding GitHub.",
+          "file": "github-community.md"
+        },
+        {
+          "name": "GitHub Copilot",
+          "description": "An AI-powered tool for writing better code.",
+          "file": "github-copilot.md"
+        },
+        {
+          "name": "GitHub Features",
+          "description": "Various tools and services offered by GitHub.",
+          "file": "github-features.md"
+        },
+        {
+          "name": "GitHub Gallery",
+          "description": "A platform showcasing on-device ML and GenAI use cases.",
+          "file": "github-gallery.md"
+        },
+        {
+          "name": "GitHub Platform",
+          "description": "A web-based platform for version control and collaboration on software development projects.",
+          "file": "github-platform.md"
+        },
+        {
+          "name": "GitHub Repository",
+          "description": "A collection of files and folders on GitHub.",
+          "file": "github-repository.md"
+        },
+        {
+          "name": "GitHub Sponsors",
+          "description": "A program that allows developers to fund open-source projects and receive support from the community.",
+          "file": "github-sponsors.md"
+        },
+        {
+          "name": "GitHub",
+          "description": "A web-based platform for version control and collaboration on software development projects.",
+          "file": "github.md"
+        },
+        {
+          "name": "Google AI Edge",
+          "description": "Google's initiative for edge AI development.",
+          "file": "google-ai-edge.md"
+        },
+        {
+          "name": "Growth Mindset",
+          "description": "The ability to embrace learning, adaptation, and self-improvement, recognizing that skills and knowledge can be developed over time.",
+          "file": "growth-mindset.md"
+        },
+        {
+          "name": "Image Recognition",
+          "description": "The ability of a system to identify and classify objects within images.",
+          "file": "image-recognition.md"
+        },
+        {
+          "name": "Industry Solutions",
+          "description": "Solutions tailored to specific industries",
+          "file": "industry-solutions.md"
+        },
+        {
+          "name": "Intent Capture",
+          "description": "The process of understanding the user's goal or objective when creating a new skill.",
+          "file": "intent-capture.md"
+        },
+        {
+          "name": "Model Context Protocol",
+          "description": "A protocol that enables integration of Claude Context with AI coding assistants",
+          "file": "model-context-protocol.md"
+        },
+        {
+          "name": "Natural Language",
+          "description": "The ability of a system to understand and generate human language.",
+          "file": "natural-language.md"
+        },
+        {
+          "name": "Neural Networks",
+          "description": "Computing architectures designed to mimic the interconnected structure and signaling pathways of biological brains.",
+          "file": "neural-networks.md"
+        },
+        {
+          "name": "Nha Cai",
+          "description": "The organization or entity that controls the lottery",
+          "file": "nha-cai.md"
+        },
+        {
+          "name": "Open Source Community",
+          "description": "A community of developers who collaborate on open-source software projects, sharing code and knowledge to create high-quality software.",
+          "file": "open-source-community.md"
+        },
+        {
+          "name": "Open Source",
+          "description": "A development model where software source code is made freely available for use, modification, and distribution.",
+          "file": "open-source.md"
+        },
+        {
+          "name": "OpenAI API",
+          "description": "An API that provides embedding models for Claude Context",
+          "file": "openai-api.md"
+        },
+        {
+          "name": "Operator Result Control",
+          "description": "The premise that lottery organizers actively manipulate draw outcomes and prize distributions.",
+          "file": "operator-result-control.md"
+        },
+        {
+          "name": "Passive Skills",
+          "description": "The skills that work in the background, helping software engineers through their daily routine without being noticed, such as patience and determination.",
+          "file": "passive-skills.md"
+        },
+        {
+          "name": "Postman Collection",
+          "description": "A collection of APIs and examples for Postman.",
+          "file": "postman-collection.md"
+        },
+        {
+          "name": "Postman Inc",
+          "description": "An API platform for building and using APIs",
+          "file": "postman-inc.md"
+        },
+        {
+          "name": "Postman",
+          "description": "A tool for building, testing, and documenting APIs",
+          "file": "postman.md"
+        },
+        {
+          "name": "Pricing Model",
+          "description": "The pricing structure for using GitHub features and services",
+          "file": "pricing-model.md"
+        },
+        {
+          "name": "Progressive Disclosure",
+          "description": "A design pattern used in skill development to gradually reveal information and functionality to the user as needed.",
+          "file": "progressive-disclosure.md"
+        },
+        {
+          "name": "Quy Luật Số",
+          "description": "A set of rules or patterns that can be used to analyze and predict lottery numbers",
+          "file": "quy-luat-so.md"
+        },
+        {
+          "name": "Recommendation Systems",
+          "description": "Systems that suggest products or services based on user preferences and behavior.",
+          "file": "recommendation-systems.md"
+        },
+        {
+          "name": "Resilience",
+          "description": "The ability to cope with and recover from setbacks, failures, and frustrations.",
+          "file": "resilience.md"
+        },
+        {
+          "name": "Security Lab",
+          "description": "A resource provided by GitHub to help developers identify and fix security vulnerabilities in their code.",
+          "file": "security-lab.md"
+        },
+        {
+          "name": "Security",
+          "description": "The practice of protecting computer systems and data from unauthorized access or damage.",
+          "file": "security.md"
+        },
+        {
+          "name": "Skill Creator",
+          "description": "A tool for creating, testing, and improving AI agent skills through structured evaluation and benchmarking.",
+          "file": "skill-creator.md"
+        },
+        {
+          "name": "Skill Development",
+          "description": "The process of creating, testing, and refining AI skills to ensure they meet specific requirements and perform optimally.",
+          "file": "skill-development.md"
+        },
+        {
+          "name": "Skill Evaluation",
+          "description": "The process of testing and assessing the performance of a skill to identify areas for improvement.",
+          "file": "skill-evaluation.md"
+        },
+        {
+          "name": "SKILL.md",
+          "description": "A file format used to define and document AI skills, including their name, description, and functionality.",
+          "file": "skill-md.md"
+        },
+        {
+          "name": "Skill Optimization",
+          "description": "The process of refining and improving AI skills to enhance their performance, efficiency, and effectiveness.",
+          "file": "skill-optimization.md"
+        },
+        {
+          "name": "Software Development",
+          "description": "The process of designing, creating, testing, and maintaining software systems.",
+          "file": "software-development.md"
+        },
+        {
+          "name": "Software Engineer",
+          "description": "A professional who designs, develops, and maintains software systems",
+          "file": "software-engineer.md"
+        },
+        {
+          "name": "Statistics",
+          "description": "A field of study that involves collecting, analyzing, and interpreting data to understand patterns and trends.",
+          "file": "statistics.md"
+        },
+        {
+          "name": "Supervised Learning",
+          "description": "A training methodology where algorithms learn from labeled datasets containing predefined inputs and outputs.",
+          "file": "supervised-learning.md"
+        },
+        {
+          "name": "Symmetrical Structure",
+          "description": "Number combinations following balanced digit arrangements such as mirrored sequences or paired repetitions.",
+          "file": "symmetrical-structure.md"
+        },
+        {
+          "name": "Technical Skills",
+          "description": "The specific programming languages, frameworks, and tools used in software development.",
+          "file": "technical-skills.md"
+        },
+        {
+          "name": "Ticket Block Structure",
+          "description": "A full lottery block contains 160 tickets sharing identical trailing digits while the leading digit cycles from 0 to 9.",
+          "file": "ticket-block-structure.md"
+        },
+        {
+          "name": "Topic Exploration",
+          "description": "Exploring topics related to development and GitHub",
+          "file": "topic-exploration.md"
+        },
+        {
+          "name": "Unsupervised Learning",
+          "description": "A machine learning approach that identifies hidden patterns and structures within completely unlabeled data.",
+          "file": "unsupervised-learning.md"
+        },
+        {
+          "name": "User Feedback",
+          "description": "Input and guidance provided by users to improve the development and refinement of AI skills.",
+          "file": "user-feedback.md"
+        },
+        {
+          "name": "Zilliz Cloud",
+          "description": "A cloud platform that provides vector databases and API keys for Claude Context",
+          "file": "zilliz-cloud.md"
+        }
+      ]
+    },
+    {
+      "name": "Software Engineering Practices",
+      "summary": "1 concepts related to Software Engineering Practices",
+      "concepts": [
+        "Enterprise Solutions"
+      ],
+      "conceptDetails": [
+        {
+          "name": "Enterprise Solutions",
+          "description": "Software solutions designed for large organizations",
+          "file": "enterprise-solutions.md"
+        }
+      ]
+    },
+    {
+      "name": "Lottery Analysis Concepts",
+      "summary": "7 concepts related to Lottery Analysis Concepts",
+      "concepts": [
+        "Cấu Trúc Vé Số",
+        "Parity Pattern",
+        "Sảnh Số",
+        "Số Lặp Lại",
+        "Số Soi Gương",
+        "Trick Lotto",
+        "Ve So"
+      ],
+      "conceptDetails": [
+        {
+          "name": "Cấu Trúc Vé Số",
+          "description": "The structure of a lottery ticket, including the arrangement of numbers",
+          "file": "cau-truc-ve-so.md"
+        },
+        {
+          "name": "Parity Pattern",
+          "description": "Lottery numbers composed entirely of even or entirely of odd digits.",
+          "file": "parity-pattern.md"
+        },
+        {
+          "name": "Sảnh Số",
+          "description": "A sequence of numbers in a lottery ticket that can increase the chances of winning",
+          "file": "sanh-so.md"
+        },
+        {
+          "name": "Số Lặp Lại",
+          "description": "A number that appears multiple times in a lottery ticket",
+          "file": "so-lap-lai.md"
+        },
+        {
+          "name": "Số Soi Gương",
+          "description": "A number that is reflected or mirrored in a lottery ticket",
+          "file": "so-soi-guong.md"
+        },
+        {
+          "name": "Trick Lotto",
+          "description": "A strategy to reduce the odds of losing in a lottery by analyzing the structure of the lottery tickets",
+          "file": "trick-lotto.md"
+        },
+        {
+          "name": "Ve So",
+          "description": "A type of lottery ticket with a unique number structure",
+          "file": "ve-so.md"
+        }
+      ]
+    },
+    {
+      "name": "Developer Skills and Mindset",
+      "summary": "1 concepts related to Developer Skills and Mindset",
+      "concepts": [
+        "Superpowers"
+      ],
+      "conceptDetails": [
+        {
+          "name": "Superpowers",
+          "description": "A project on GitHub that provides an agentic skills framework",
+          "file": "superpowers.md"
+        }
+      ]
+    },
+    {
+      "name": "GitHub Ecosystem",
+      "summary": "3 concepts related to GitHub Ecosystem",
+      "concepts": [
+        "Community Engagement",
+        "Hermes Agent",
+        "Support Services"
+      ],
+      "conceptDetails": [
+        {
+          "name": "Community Engagement",
+          "description": "Engaging with the GitHub community",
+          "file": "community-engagement.md"
+        },
+        {
+          "name": "Hermes Agent",
+          "description": "The agent that grows with you, a GitHub repository.",
+          "file": "hermes-agent.md"
+        },
+        {
+          "name": "Support Services",
+          "description": "Various support services offered by GitHub",
+          "file": "support-services.md"
+        }
+      ]
+    },
+    {
+      "name": "AI and Machine Learning Technologies",
+      "summary": "5 concepts related to AI and Machine Learning Technologies",
+      "concepts": [
+        "Deep Learning",
+        "Determination",
+        "Machine Learning",
+        "Model Gallery",
+        "On Device ML"
+      ],
+      "conceptDetails": [
+        {
+          "name": "Deep Learning",
+          "description": "An advanced technique utilizing multi-layered neural networks to automatically extract hierarchical features from data.",
+          "file": "deep-learning.md"
+        },
+        {
+          "name": "Determination",
+          "description": "The firm decision to achieve a goal, such as solving a complex problem or learning a new skill, despite obstacles or setbacks.",
+          "file": "determination.md"
+        },
+        {
+          "name": "Machine Learning",
+          "description": "A subset of artificial intelligence that focuses on building systems capable of learning from data.",
+          "file": "machine-learning.md"
+        },
+        {
+          "name": "Model Gallery",
+          "description": "A collection of machine learning models.",
+          "file": "model-gallery.md"
+        },
+        {
+          "name": "On Device ML",
+          "description": "Machine learning models that run on local devices.",
+          "file": "on-device-ml.md"
+        }
+      ]
+    },
+    {
+      "name": "Lottery Number Analysis Patterns",
+      "summary": "12 concepts related to Lottery Number Analysis Patterns",
+      "concepts": [
+        "Cau Truc Abbxyy",
+        "Cau Truc",
+        "Consecutive Sequence",
+        "Quy Luat",
+        "Repeating Number Pattern",
+        "Sanh Con",
+        "Số Full Chẵn",
+        "Số Full Lẻ",
+        "So Full",
+        "Số Gánh",
+        "So Lap",
+        "Soi Guong"
+      ],
+      "conceptDetails": [
+        {
+          "name": "Cau Truc Abbxyy",
+          "description": "A specific structure of ve so with repeating numbers",
+          "file": "cau-truc-abbxyy.md"
+        },
+        {
+          "name": "Cau Truc",
+          "description": "The structure of a ve so, consisting of a series of numbers with a specific pattern",
+          "file": "cau-truc.md"
+        },
+        {
+          "name": "Consecutive Sequence",
+          "description": "A pattern where ticket digits form a continuous numerical run of three to six numbers regardless of order.",
+          "file": "consecutive-sequence.md"
+        },
+        {
+          "name": "Quy Luat",
+          "description": "A set of rules or patterns used to identify potential winning combinations",
+          "file": "quy-luat.md"
+        },
+        {
+          "name": "Repeating Number Pattern",
+          "description": "Ticket numbers featuring a specific three-digit sequence that appears twice within the same set.",
+          "file": "repeating-number-pattern.md"
+        },
+        {
+          "name": "Sanh Con",
+          "description": "A sequence of consecutive numbers in a ve so, with a minimum of 3 numbers",
+          "file": "sanh-con.md"
+        },
+        {
+          "name": "Số Full Chẵn",
+          "description": "A type of number pattern where all numbers are even",
+          "file": "so-full-chan.md"
+        },
+        {
+          "name": "Số Full Lẻ",
+          "description": "A type of number pattern where all numbers are odd",
+          "file": "so-full-le.md"
+        },
+        {
+          "name": "So Full",
+          "description": "A ve so with all numbers being either even or odd",
+          "file": "so-full.md"
+        },
+        {
+          "name": "Số Gánh",
+          "description": "A type of number pattern where a number or sequence of numbers is used as a 'carrier' for other numbers",
+          "file": "so-ganh.md"
+        },
+        {
+          "name": "So Lap",
+          "description": "A ve so with repeating numbers",
+          "file": "so-lap.md"
+        },
+        {
+          "name": "Soi Guong",
+          "description": "A ve so with numbers that are mirror images of each other",
+          "file": "soi-guong.md"
+        }
+      ]
+    },
+    {
+      "name": "Machine Learning & Data Science",
+      "summary": "1 concepts related to Machine Learning & Data Science",
+      "concepts": [
+        "Vector Database"
+      ],
+      "conceptDetails": [
+        {
+          "name": "Vector Database",
+          "description": "A database that stores data as vectors, enabling efficient semantic search",
+          "file": "vector-database.md"
+        }
+      ]
+    }
+  ]
+}

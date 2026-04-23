@@ -161,6 +161,36 @@ app.get('/api/topics', async (req, res) => {
 });
 
 /**
+ * GET /api/articles - Get all generated articles
+ */
+app.get('/api/articles', async (req, res) => {
+  try {
+    const wikiDir = path.join(__dirname, '..', 'wiki');
+    const { listArticles } = await import('./article-generator.js');
+    const articles = await listArticles(wikiDir);
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/articles/:filename - Get specific article
+ */
+app.get('/api/articles/:filename', async (req, res) => {
+  try {
+    const wikiDir = path.join(__dirname, '..', 'wiki');
+    const articlesDir = path.join(wikiDir, 'articles');
+    const filePath = path.join(articlesDir, req.params.filename);
+    
+    const content = await fs.readFile(filePath, 'utf-8');
+    res.json({ content });
+  } catch (error) {
+    res.status(404).json({ error: 'Article not found' });
+  }
+});
+
+/**
  * POST /api/chat - Chat with knowledge base
  */
 app.post('/api/chat', async (req, res) => {

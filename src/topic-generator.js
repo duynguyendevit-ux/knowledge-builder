@@ -133,6 +133,12 @@ export async function generateAndCacheTopics(wikiDir) {
     }, null, 2));
 
     console.log(`✅ Topics cached: ${topics.length} topics`);
+    
+    // Auto-generate articles for topics with 5+ concepts
+    console.log('\n📝 Checking for article generation...');
+    const { generateArticles } = await import('./article-generator.js');
+    await generateArticles(topics, wikiDir);
+    
     return topics;
   } catch (error) {
     console.error('❌ Topic generation failed:', error);
