@@ -165,16 +165,16 @@ export default function Topics() {
               <BookOpen className="w-6 h-6 text-[#8b7355]" />
               <h1 className="text-xl font-serif text-[#2c2416]">Knowledge Topics</h1>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 md:gap-2">
               <button
                 onClick={() => router.push('/articles')}
-                className="px-3 py-1.5 text-sm bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
+                className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
               >
                 Articles
               </button>
               <button
                 onClick={() => router.push('/')}
-                className="px-3 py-1.5 text-sm text-[#8b7355] hover:text-[#2c2416] transition-colors"
+                className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm text-[#8b7355] hover:text-[#2c2416] transition-colors"
               >
                 Home
               </button>

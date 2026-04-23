@@ -63,16 +63,16 @@ export default function Articles() {
                 AI-generated comprehensive articles from your knowledge base
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 md:gap-2">
               <button
                 onClick={() => router.push('/topics')}
-                className="px-3 py-1.5 text-sm bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
+                className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
               >
                 Topics
               </button>
               <button
                 onClick={() => router.push('/')}
-                className="px-3 py-1.5 text-sm bg-[#8b7355] text-white rounded hover:bg-[#2c2416] transition-colors"
+                className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm bg-[#8b7355] text-white rounded hover:bg-[#2c2416] transition-colors"
               >
                 Home
               </button>

@@ -234,20 +234,20 @@ export default function Home() {
                 <p className="text-xs text-[#8b7355] mt-0.5">AI-powered knowledge management</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 md:gap-2">
               <button
                 onClick={() => window.location.href = '/topics'}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
+                className="flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
               >
-                <Network className="w-4 h-4" />
-                Topics
+                <Network className="w-3.5 md:w-4 h-3.5 md:h-4" />
+                <span className="hidden sm:inline">Topics</span>
               </button>
               <button
                 onClick={() => window.location.href = '/articles'}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-[#8b7355] text-white rounded hover:bg-[#2c2416] transition-colors"
+                className="flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm bg-[#8b7355] text-white rounded hover:bg-[#2c2416] transition-colors"
               >
-                <BookOpen className="w-4 h-4" />
-                Articles
+                <BookOpen className="w-3.5 md:w-4 h-3.5 md:h-4" />
+                <span className="hidden sm:inline">Articles</span>
               </button>
             </div>
           </div>
