@@ -3,10 +3,13 @@
 import { useState, useEffect } from 'react'
 import { BookOpen, Calendar, FileText } from 'lucide-react'
 import { useRouter } from 'next/router'
+import { Search } from 'lucide-react'
 
 export default function Articles() {
   const router = useRouter()
   const [articles, setArticles] = useState<any[]>([])
+  const [filteredArticles, setFilteredArticles] = useState<any[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
@@ -22,18 +25,35 @@ export default function Articles() {
       if (!response.ok) {
         console.error('Failed to fetch articles:', response.status)
         setArticles([])
+        setFilteredArticles([])
         setLoading(false)
         return
       }
       
       const data = await response.json()
-      setArticles(Array.isArray(data) ? data : [])
+      const articlesData = Array.isArray(data) ? data : []
+      setArticles(articlesData)
+      setFilteredArticles(articlesData)
       setLoading(false)
     } catch (error) {
       console.error('Failed to fetch articles:', error)
       setArticles([])
+      setFilteredArticles([])
       setLoading(false)
     }
+  }
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query)
+    if (!query.trim()) {
+      setFilteredArticles(articles)
+      return
+    }
+    
+    const filtered = articles.filter(article => 
+      article.title.toLowerCase().includes(query.toLowerCase())
+    )
+    setFilteredArticles(filtered)
   }
 
   const formatDate = (dateString: string) => {
@@ -83,19 +103,42 @@ export default function Articles() {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto px-6 py-8">
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#8b7355]" />
+            <input
+              type="text"
+              placeholder="Search articles..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-[#d4c5a9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b7355] focus:border-transparent"
+            />
+          </div>
+          {searchQuery && (
+            <p className="text-sm text-[#8b7355] mt-2">
+              Found {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
+
         {loading ? (
           <div className="text-center py-12">
             <p className="text-[#8b7355] text-lg">Loading articles...</p>
           </div>
-        ) : articles.length === 0 ? (
+        ) : filteredArticles.length === 0 ? (
           <div className="text-center py-12">
             <BookOpen className="w-16 h-16 text-[#d4c5a9] mx-auto mb-4" />
-            <p className="text-[#8b7355] text-lg mb-2">No articles generated yet</p>
-            <p className="text-[#8b7355] text-sm">Upload documents with 5+ related concepts to auto-generate articles</p>
+            <p className="text-[#8b7355] text-lg mb-2">
+              {searchQuery ? 'No articles found' : 'No articles generated yet'}
+            </p>
+            <p className="text-[#8b7355] text-sm">
+              {searchQuery ? 'Try a different search term' : 'Upload documents with 5+ related concepts to auto-generate articles'}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.map((article, index) => (
+            {filteredArticles.map((article, index) => (
               <div 
                 key={index}
                 className="bg-white rounded-lg border border-[#d4c5a9] overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"

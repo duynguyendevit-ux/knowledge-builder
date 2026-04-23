@@ -12,6 +12,9 @@ export default function ArticleDetail() {
   const [article, setArticle] = useState<any>(null)
   const [content, setContent] = useState<string>('')
   const [loading, setLoading] = useState(true)
+  const [toc, setToc] = useState<{id: string, text: string, level: number}[]>([])
+  const [readingProgress, setReadingProgress] = useState(0)
+  const [relatedArticles, setRelatedArticles] = useState<any[]>([])
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
@@ -20,6 +23,47 @@ export default function ArticleDetail() {
       fetchArticle()
     }
   }, [slug])
+
+  useEffect(() => {
+    if (content) {
+      extractTOC()
+    }
+  }, [content])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight - windowHeight
+      const scrolled = window.scrollY
+      const progress = (scrolled / documentHeight) * 100
+      setReadingProgress(Math.min(progress, 100))
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const extractTOC = () => {
+    const headings: {id: string, text: string, level: number}[] = []
+    const lines = content.split('\n')
+    
+    lines.forEach((line, index) => {
+      const h2Match = line.match(/^## (.+)$/)
+      const h3Match = line.match(/^### (.+)$/)
+      
+      if (h2Match) {
+        const text = h2Match[1]
+        const id = `heading-${index}`
+        headings.push({ id, text, level: 2 })
+      } else if (h3Match) {
+        const text = h3Match[1]
+        const id = `heading-${index}`
+        headings.push({ id, text, level: 3 })
+      }
+    })
+    
+    setToc(headings)
+  }
 
   const fetchArticle = async () => {
     try {
@@ -32,6 +76,12 @@ export default function ArticleDetail() {
       
       if (articleMeta) {
         setArticle(articleMeta)
+        
+        // Find related articles (exclude current)
+        const related = articles
+          .filter((a: any) => a.filename !== filename)
+          .slice(0, 3)
+        setRelatedArticles(related)
       }
       
       // Fetch article content
@@ -83,7 +133,15 @@ export default function ArticleDetail() {
   return (
     <div className="min-h-screen bg-[#faf8f3]">
       {/* Header */}
-      <div className="bg-white border-b border-[#d4c5a9]">
+      <div className="bg-white border-b border-[#d4c5a9] sticky top-0 z-10">
+        {/* Reading Progress Bar */}
+        <div className="h-1 bg-[#f5f1e8]">
+          <div 
+            className="h-full bg-[#8b7355] transition-all duration-150"
+            style={{ width: `${readingProgress}%` }}
+          />
+        </div>
+        
         <div className="max-w-4xl mx-auto px-6 py-4">
           <button
             onClick={() => router.push('/articles')}
@@ -111,8 +169,33 @@ export default function ArticleDetail() {
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="bg-white rounded-lg border border-[#d4c5a9] p-8">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="flex gap-8">
+          {/* Table of Contents - Desktop Only */}
+          {toc.length > 0 && (
+            <div className="hidden lg:block w-64 flex-shrink-0">
+              <div className="sticky top-24">
+                <h3 className="text-sm font-semibold text-[#2c2416] mb-3">Table of Contents</h3>
+                <nav className="space-y-2">
+                  {toc.map((item, index) => (
+                    <a
+                      key={index}
+                      href={`#${item.id}`}
+                      className={`block text-sm text-[#8b7355] hover:text-[#2c2416] transition-colors ${
+                        item.level === 3 ? 'pl-4' : ''
+                      }`}
+                    >
+                      {item.text}
+                    </a>
+                  ))}
+                </nav>
+              </div>
+            </div>
+          )}
+
+          {/* Article Content */}
+          <div className="flex-1 min-w-0">
+            <div className="bg-white rounded-lg border border-[#d4c5a9] p-8">
           <div className="
             [&_h1]:text-3xl [&_h1]:font-serif [&_h1]:text-[#2c2416] [&_h1]:mb-6 [&_h1]:pb-3 [&_h1]:border-b [&_h1]:border-[#d4c5a9]
             [&_h2]:text-2xl [&_h2]:font-serif [&_h2]:text-[#2c2416] [&_h2]:mt-10 [&_h2]:mb-4
@@ -134,9 +217,33 @@ export default function ArticleDetail() {
             [&_th]:bg-[#f5f1e8] [&_th]:text-[#2c2416] [&_th]:font-semibold [&_th]:p-3 [&_th]:text-left [&_th]:border [&_th]:border-[#d4c5a9]
             [&_td]:text-[#4a4a4a] [&_td]:p-3 [&_td]:border [&_td]:border-[#d4c5a9]
           ">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {content}
-            </ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {content}
+              </ReactMarkdown>
+            </div>
+
+            {/* Related Articles */}
+            {relatedArticles.length > 0 && (
+              <div className="mt-12 pt-8 border-t border-[#d4c5a9]">
+                <h3 className="text-xl font-serif text-[#2c2416] mb-4">Related Articles</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {relatedArticles.map((related, index) => (
+                    <a
+                      key={index}
+                      href={`/articles/${related.filename.replace('.md', '')}`}
+                      className="block p-4 border border-[#d4c5a9] rounded-lg hover:shadow-md transition-shadow"
+                    >
+                      <h4 className="text-sm font-serif text-[#2c2416] mb-2 line-clamp-2">
+                        {related.title}
+                      </h4>
+                      <p className="text-xs text-[#8b7355]">
+                        {related.concepts} concepts
+                      </p>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
