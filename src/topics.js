@@ -96,7 +96,17 @@ export async function getAllTopics(wikiDir) {
       }
     }
     
-    // Simple grouping by first letter (fallback when LLM fails)
+    // Try LLM-based grouping first, fallback to alphabetical if fails
+    try {
+      const topics = await groupConceptsByTopics(concepts);
+      if (topics && topics.length > 0) {
+        return topics;
+      }
+    } catch (error) {
+      console.error('LLM grouping failed, using alphabetical fallback:', error);
+    }
+    
+    // Fallback: Simple grouping by first letter
     const grouped = {};
     for (const concept of concepts) {
       const firstLetter = concept.name[0].toUpperCase();
