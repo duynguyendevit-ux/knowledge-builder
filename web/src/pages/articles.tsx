@@ -149,21 +149,20 @@ export default function Articles() {
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="p-6 overflow-y-auto">
-              <div className="prose prose-slate max-w-none
-                prose-headings:text-[#2c2416] prose-headings:font-serif
-                prose-h1:text-3xl prose-h1:mb-4
-                prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
-                prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
-                prose-p:text-[#4a4a4a] prose-p:leading-relaxed prose-p:mb-4
-                prose-strong:text-[#2c2416] prose-strong:font-semibold
-                prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-4
-                prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-4
-                prose-li:text-[#4a4a4a] prose-li:mb-2
-                prose-code:bg-[#f5f1e8] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                prose-pre:bg-[#2c2416] prose-pre:text-white prose-pre:p-4 prose-pre:rounded prose-pre:overflow-x-auto
-                prose-a:text-[#8b7355] prose-a:underline hover:prose-a:text-[#2c2416]
-                prose-blockquote:border-l-4 prose-blockquote:border-[#d4c5a9] prose-blockquote:pl-4 prose-blockquote:italic
+            <div className="p-6 overflow-y-auto bg-white">
+              <div className="
+                [&_h1]:text-3xl [&_h1]:font-serif [&_h1]:text-[#2c2416] [&_h1]:mb-4
+                [&_h2]:text-2xl [&_h2]:font-serif [&_h2]:text-[#2c2416] [&_h2]:mt-8 [&_h2]:mb-4
+                [&_h3]:text-xl [&_h3]:font-serif [&_h3]:text-[#2c2416] [&_h3]:mt-6 [&_h3]:mb-3
+                [&_p]:text-[#4a4a4a] [&_p]:leading-relaxed [&_p]:mb-4
+                [&_strong]:text-[#2c2416] [&_strong]:font-semibold
+                [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4
+                [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4
+                [&_li]:text-[#4a4a4a] [&_li]:mb-2
+                [&_code]:bg-[#f5f1e8] [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:text-[#2c2416]
+                [&_pre]:bg-[#2c2416] [&_pre]:text-white [&_pre]:p-4 [&_pre]:rounded [&_pre]:overflow-x-auto [&_pre]:mb-4
+                [&_a]:text-[#8b7355] [&_a]:underline hover:[&_a]:text-[#2c2416]
+                [&_blockquote]:border-l-4 [&_blockquote]:border-[#d4c5a9] [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-[#4a4a4a]
               ">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {articleContent}
