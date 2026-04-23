@@ -237,10 +237,17 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => window.location.href = '/topics'}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-[#8b7355] text-[#8b7355] rounded hover:bg-[#f5f1e8] transition-colors"
+              >
+                <Network className="w-5 h-5" />
+                Topics
+              </button>
+              <button
+                onClick={() => window.location.href = '/articles'}
                 className="flex items-center gap-2 px-4 py-2 bg-[#8b7355] text-white rounded hover:bg-[#2c2416] transition-colors"
               >
                 <BookOpen className="w-5 h-5" />
-                View Topics
+                Articles
               </button>
               <div className="text-xs text-[#b8a490]">v1.0.0</div>
             </div>
