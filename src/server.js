@@ -90,7 +90,7 @@ app.post('/api/logout', (req, res) => {
 /**
  * GET /api/stats - Get knowledge base statistics
  */
-app.get('/api/stats', requireAuth, async (req, res) => {
+app.get('/api/stats', async (req, res) => {
   try {
     const stats = await getStats();
     res.json(stats);
@@ -102,7 +102,7 @@ app.get('/api/stats', requireAuth, async (req, res) => {
 /**
  * GET /api/summaries - List all summaries
  */
-app.get('/api/summaries', requireAuth, async (req, res) => {
+app.get('/api/summaries', async (req, res) => {
   try {
     const summaries = await listSummaries();
     res.json(summaries);
@@ -114,7 +114,7 @@ app.get('/api/summaries', requireAuth, async (req, res) => {
 /**
  * GET /api/concepts - List all concepts
  */
-app.get('/api/concepts', requireAuth, async (req, res) => {
+app.get('/api/concepts', async (req, res) => {
   try {
     const concepts = await listConcepts();
     res.json(concepts);
@@ -126,7 +126,7 @@ app.get('/api/concepts', requireAuth, async (req, res) => {
 /**
  * GET /api/graph - Get graph data for visualization
  */
-app.get('/api/graph', requireAuth, async (req, res) => {
+app.get('/api/graph', async (req, res) => {
   try {
     const graphData = await getGraphData();
     res.json(graphData);
@@ -138,7 +138,7 @@ app.get('/api/graph', requireAuth, async (req, res) => {
 /**
  * GET /api/status - Get processing status
  */
-app.get('/api/status', requireAuth, async (req, res) => {
+app.get('/api/status', async (req, res) => {
   try {
     const status = getProcessingStatus();
     res.json(status);
@@ -150,7 +150,7 @@ app.get('/api/status', requireAuth, async (req, res) => {
 /**
  * GET /api/topics - Get all topics with grouped concepts
  */
-app.get('/api/topics', requireAuth, async (req, res) => {
+app.get('/api/topics', async (req, res) => {
   try {
     const wikiDir = path.join(__dirname, '..', 'wiki');
     const topics = await getAllTopics(wikiDir);
@@ -163,7 +163,7 @@ app.get('/api/topics', requireAuth, async (req, res) => {
 /**
  * POST /api/chat - Chat with knowledge base
  */
-app.post('/api/chat', requireAuth, async (req, res) => {
+app.post('/api/chat', async (req, res) => {
   try {
     const { question } = req.body;
     
@@ -245,7 +245,7 @@ app.post('/api/chat', requireAuth, async (req, res) => {
 /**
  * POST /api/fetch-url - Fetch content from URL using Jina Reader
  */
-app.post('/api/fetch-url', requireAuth, async (req, res) => {
+app.post('/api/fetch-url', async (req, res) => {
   try {
     const { url } = req.body;
     
@@ -288,7 +288,7 @@ app.post('/api/fetch-url', requireAuth, async (req, res) => {
 /**
  * POST /api/upload - Upload files
  */
-app.post('/api/upload', requireAuth, upload.array('files'), async (req, res) => {
+app.post('/api/upload', upload.array('files'), async (req, res) => {
   try {
     const files = req.files;
     
@@ -349,7 +349,7 @@ app.post('/api/upload', requireAuth, upload.array('files'), async (req, res) => 
 /**
  * POST /api/process - Process raw files
  */
-app.post('/api/process', requireAuth, async (req, res) => {
+app.post('/api/process', async (req, res) => {
   try {
     // Start processing in background
     processRawFiles().catch(console.error);

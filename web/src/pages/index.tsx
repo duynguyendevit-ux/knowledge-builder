@@ -11,7 +11,7 @@ const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), {
 })
 
 export default function Home() {
-  const [token, setToken] = useState<string | null>(null)
+  const [token, setToken] = useState<string | null>('public')
   const [isClient, setIsClient] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [processing, setProcessing] = useState(false)
@@ -33,9 +33,7 @@ export default function Home() {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
-  const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${token}`
-  })
+  const getAuthHeaders = () => ({})
 
   const fetchStats = async () => {
     try {
@@ -75,15 +73,10 @@ export default function Home() {
     }
   }
 
-  // Check for existing token on mount
+  // Auto-initialize
   useEffect(() => {
     setIsClient(true)
-    if (typeof window !== 'undefined') {
-      const savedToken = localStorage.getItem('kb_token')
-      if (savedToken) {
-        setToken(savedToken)
-      }
-    }
+    setToken('public')
   }, [])
 
   // Fetch data when token is available
@@ -99,9 +92,8 @@ export default function Home() {
     return null
   }
 
-  // Show login if not authenticated
-  if (!token) {
-    return <Login onLogin={setToken} />
+  if (!isClient) {
+    return <div className="min-h-screen bg-[#f5f1e8] flex items-center justify-center"><div className="text-[#8b7355]">Loading...</div></div>
   }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

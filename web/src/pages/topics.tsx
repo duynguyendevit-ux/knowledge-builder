@@ -12,7 +12,7 @@ const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), {
 
 export default function Topics() {
   const router = useRouter()
-  const [token, setToken] = useState<string | null>(null)
+  const [token, setToken] = useState<string | null>('public')
   const [topics, setTopics] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set())
@@ -21,15 +21,8 @@ export default function Topics() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://kb-api.tomtom79.tech'
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedToken = localStorage.getItem('kb_token')
-      if (!storedToken) {
-        router.push('/')
-        return
-      }
-      setToken(storedToken)
-    }
-  }, [router])
+    setToken('public')
+  }, [])
 
   useEffect(() => {
     if (token) {
@@ -40,11 +33,7 @@ export default function Topics() {
   const fetchTopics = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${API_URL}/api/topics`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      const response = await fetch(`${API_URL}/api/topics`)
       
       if (!response.ok) {
         console.error('Failed to fetch topics:', response.status)
