@@ -69,6 +69,7 @@ export default function ArticleDetail() {
     try {
       const filename = `${slug}.md`
       
+      // Fetch article metadata
       const articlesResponse = await fetch(`${API_URL}/api/articles`)
       const articles = await articlesResponse.json()
       const articleMeta = articles.find((a: any) => a.filename === filename)
@@ -76,12 +77,14 @@ export default function ArticleDetail() {
       if (articleMeta) {
         setArticle(articleMeta)
         
+        // Find related articles (exclude current)
         const related = articles
           .filter((a: any) => a.filename !== filename)
           .slice(0, 3)
         setRelatedArticles(related)
       }
       
+      // Fetch article content
       const contentResponse = await fetch(`${API_URL}/api/articles/${filename}`)
       const data = await contentResponse.json()
       setContent(data.content)
@@ -129,7 +132,9 @@ export default function ArticleDetail() {
 
   return (
     <div className="min-h-screen bg-[#faf8f3]">
+      {/* Header */}
       <div className="bg-white border-b border-[#d4c5a9] sticky top-0 z-10">
+        {/* Reading Progress Bar */}
         <div className="h-1 bg-[#f5f1e8]">
           <div 
             className="h-full bg-[#8b7355] transition-all duration-150"
@@ -163,8 +168,10 @@ export default function ArticleDetail() {
         </div>
       </div>
 
+      {/* Content */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex gap-8">
+          {/* Table of Contents - Desktop Only */}
           {toc.length > 0 && (
             <div className="hidden lg:block w-64 flex-shrink-0">
               <div className="sticky top-24">
@@ -186,25 +193,35 @@ export default function ArticleDetail() {
             </div>
           )}
 
+          {/* Article Content */}
           <div className="flex-1 min-w-0">
             <div className="bg-white rounded-lg border border-[#d4c5a9] p-8">
               <div className="
-                [&_h1]:text-3xl [&_h1]:font-serif [&_h1]:text-[#2c2416] [&_h1]:mb-6
+                [&_h1]:text-3xl [&_h1]:font-serif [&_h1]:text-[#2c2416] [&_h1]:mb-6 [&_h1]:pb-3 [&_h1]:border-b [&_h1]:border-[#d4c5a9]
                 [&_h2]:text-2xl [&_h2]:font-serif [&_h2]:text-[#2c2416] [&_h2]:mt-10 [&_h2]:mb-4
                 [&_h3]:text-xl [&_h3]:font-serif [&_h3]:text-[#2c2416] [&_h3]:mt-8 [&_h3]:mb-3
-                [&_p]:text-[#4a4a4a] [&_p]:leading-relaxed [&_p]:mb-4
+                [&_h4]:text-lg [&_h4]:font-serif [&_h4]:text-[#2c2416] [&_h4]:mt-6 [&_h4]:mb-2
+                [&_p]:text-[#4a4a4a] [&_p]:leading-relaxed [&_p]:mb-4 [&_p]:text-base
                 [&_strong]:text-[#2c2416] [&_strong]:font-semibold
-                [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4
-                [&_li]:text-[#4a4a4a]
-                [&_code]:bg-[#f5f1e8] [&_code]:px-2 [&_code]:py-1 [&_code]:rounded [&_code]:text-sm [&_code]:text-[#2c2416]
-                [&_pre]:bg-[#2c2416] [&_pre]:text-white [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:mb-6
-                [&_a]:text-[#8b7355] [&_a]:underline hover:[&_a]:text-[#2c2416]
+                [&_em]:italic [&_em]:text-[#4a4a4a]
+                [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ul]:space-y-2
+                [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4 [&_ol]:space-y-2
+                [&_li]:text-[#4a4a4a] [&_li]:leading-relaxed
+                [&_code]:bg-[#f5f1e8] [&_code]:px-2 [&_code]:py-1 [&_code]:rounded [&_code]:text-sm [&_code]:text-[#2c2416] [&_code]:font-mono
+                [&_pre]:bg-[#2c2416] [&_pre]:text-white [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-6 [&_pre]:text-sm
+                [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-white
+                [&_a]:text-[#8b7355] [&_a]:underline [&_a]:decoration-1 hover:[&_a]:text-[#2c2416] hover:[&_a]:decoration-2
+                [&_blockquote]:border-l-4 [&_blockquote]:border-[#d4c5a9] [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:italic [&_blockquote]:text-[#4a4a4a] [&_blockquote]:bg-[#faf8f3] [&_blockquote]:my-6
+                [&_hr]:border-[#d4c5a9] [&_hr]:my-8
+                [&_table]:w-full [&_table]:border-collapse [&_table]:mb-6
+                [&_th]:bg-[#f5f1e8] [&_th]:text-[#2c2416] [&_th]:font-semibold [&_th]:p-3 [&_th]:text-left [&_th]:border [&_th]:border-[#d4c5a9]
+                [&_td]:text-[#4a4a4a] [&_td]:p-3 [&_td]:border [&_td]:border-[#d4c5a9]
               ">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {content}
-                </ReactMarkdown>
-              </div>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {content}
+              </ReactMarkdown>
 
+              {/* Related Articles */}
               {relatedArticles.length > 0 && (
                 <div className="mt-12 pt-8 border-t border-[#d4c5a9]">
                   <h3 className="text-xl font-serif text-[#2c2416] mb-4">Related Articles</h3>
@@ -215,7 +232,7 @@ export default function ArticleDetail() {
                         href={`/articles/${related.filename.replace('.md', '')}`}
                         className="block p-4 border border-[#d4c5a9] rounded-lg hover:shadow-md transition-shadow"
                       >
-                        <h4 className="text-sm font-serif text-[#2c2416] mb-2">
+                        <h4 className="text-sm font-serif text-[#2c2416] mb-2 line-clamp-2">
                           {related.title}
                         </h4>
                         <p className="text-xs text-[#8b7355]">
