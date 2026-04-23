@@ -75,17 +75,46 @@ export async function getAllTopics(wikiDir) {
     
     const concepts = [];
     for (const file of conceptFiles) {
-      if (file.endsWith('.json')) {
+      if (file.endsWith('.md')) {
         const content = await fs.readFile(path.join(conceptsDir, file), 'utf-8');
-        const concept = JSON.parse(content);
-        concepts.push(concept);
+        
+        // Parse markdown frontmatter and content
+        const titleMatch = content.match(/title:\s*(.+)/);
+        const definitionMatch = content.match(/## Definition\n(.+)/);
+        const confidenceMatch = content.match(/confidence:\s*([0-9.]+)/);
+        
+        const name = titleMatch ? titleMatch[1].trim() : file.replace('.md', '');
+        const description = definitionMatch ? definitionMatch[1].trim() : '';
+        const confidence = confidenceMatch ? confidenceMatch[1] : 'EXTRACTED';
+        
+        concepts.push({
+          name,
+          description,
+          confidence,
+          file
+        });
       }
     }
     
-    // Group by topics
-    const topics = await groupConceptsByTopics(concepts);
+    // Simple grouping by first letter (fallback when LLM fails)
+    const grouped = {};
+    for (const concept of concepts) {
+      const firstLetter = concept.name[0].toUpperCase();
+      if (!grouped[firstLetter]) {
+        grouped[firstLetter] = [];
+      }
+      grouped[firstLetter].push(concept);
+    }
     
-    return topics;
+    // Convert to topics format
+    const topics = Object.entries(grouped).map(([letter, concepts]) => ({
+      name: `${letter} - ${concepts.length} concepts`,
+      summary: `Concepts starting with ${letter}`,
+      concepts: concepts.map(c => c.name),
+      conceptDetails: concepts
+    }));
+    
+    return topics.sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.error('Failed to get topics:', error);
     return [];
