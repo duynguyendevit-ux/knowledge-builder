@@ -45,10 +45,18 @@ export default function Topics() {
           'Authorization': `Bearer ${token}`
         }
       })
+      
+      if (!response.ok) {
+        console.error('Failed to fetch topics:', response.status)
+        setTopics([])
+        return
+      }
+      
       const data = await response.json()
-      setTopics(data)
+      setTopics(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Failed to fetch topics:', error)
+      setTopics([])
     } finally {
       setLoading(false)
     }
