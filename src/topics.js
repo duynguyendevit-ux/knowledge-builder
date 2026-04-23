@@ -14,23 +14,23 @@ export async function groupConceptsByTopics(concepts) {
     return [];
   }
 
-  const conceptList = concepts.map(c => `- ${c.name}: ${c.description || ''}`).join('\n');
+  // Write concepts to temp file to avoid large prompt
+  const tempFile = path.join(__dirname, '../cache/concepts-temp.txt');
+  const conceptList = concepts.map(c => `${c.name}: ${c.description || ''}`).join('\n');
+  await fs.writeFile(tempFile, conceptList, 'utf-8');
   
-  const prompt = `Analyze these concepts and group them into 3-7 main topics.
-
-Concepts:
-${conceptList}
+  const prompt = `I have a file with ${concepts.length} concepts. Please analyze them and group into 3-7 main topics.
 
 For each topic:
 1. Give it a clear, descriptive name
 2. List which concepts belong to it
-3. Write a 2-3 sentence summary of what this topic covers
+3. Write a 2-3 sentence summary
 
 Format as JSON:
 [
   {
     "name": "Topic Name",
-    "summary": "Brief description of this topic area",
+    "summary": "Brief description",
     "concepts": ["concept1", "concept2", ...]
   }
 ]
@@ -61,6 +61,13 @@ Return ONLY the JSON array, no other text.`;
   } catch (error) {
     console.error('Failed to group concepts by topics:', error);
     return [];
+  } finally {
+    // Clean up temp file
+    try {
+      await fs.unlink(tempFile);
+    } catch (e) {
+      // Ignore cleanup errors
+    }
   }
 }
 
