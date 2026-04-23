@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { BookOpen, Network, ChevronDown, ChevronUp, Download } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const KnowledgeGraph = dynamic(() => import('../components/KnowledgeGraph'), { 
   ssr: false,
@@ -301,10 +303,10 @@ export default function Topics() {
                 ×
               </button>
             </div>
-            <div className="p-6 overflow-y-auto prose prose-sm max-w-none">
-              <div className="whitespace-pre-wrap font-mono text-sm">
+            <div className="p-6 overflow-y-auto prose prose-slate max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {articleContent}
-              </div>
+              </ReactMarkdown>
             </div>
           </div>
         </div>
