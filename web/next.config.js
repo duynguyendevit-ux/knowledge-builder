@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://139.59.109.76:3003/api/:path*',
+        destination: 'https://kb-api.tomtom79.tech/api/:path*',
       },
     ]
   },
