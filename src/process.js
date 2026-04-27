@@ -5,6 +5,8 @@ import { extractText } from './parser.js';
 import { generateSummary, extractConcepts, findConnections } from './llm.js';
 import { updateProcessingStatus, addProcessingLog, resetProcessingStatus, getProcessingStatus } from './status.js';
 import { needsProcessing, markProcessed } from './cache.js';
+import { isCodeFile, processCodeFile, generateCodeDoc } from './code-processor.js';
+import { getKnowledgeGraph } from './knowledge-graph.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +21,10 @@ const config = JSON.parse(await fs.readFile(configPath, 'utf-8'));
 export async function processRawFiles() {
   const rawDir = path.join(__dirname, '..', config.paths.raw);
   const wikiDir = path.join(__dirname, '..', config.paths.wiki);
+
+  // Initialize knowledge graph
+  const graph = getKnowledgeGraph();
+  console.log('📊 Initializing knowledge graph...');
 
   // Reset and initialize status
   resetProcessingStatus();
@@ -113,7 +119,72 @@ async function processFile(filePath, wikiDir) {
     return;
   }
 
-  // Extract text from file
+  // Check if it's a code file
+  if (isCodeFile(filePath)) {
+    console.log(`  🔧 Code file detected, using Tree-sitter parser`);
+    addProcessingLog(`Parsing code file: ${fileName}`);
+    
+    try {
+      const parsed = await processCodeFile(filePath);
+      if (parsed) {
+        // Get knowledge graph
+        const graph = getKnowledgeGraph();
+        
+        // Add document to graph
+        await graph.addDocument(fileName, {
+          created: new Date().toISOString(),
+          type: 'code',
+          summary: `Code file with ${parsed.symbols.functions.length} functions, ${parsed.symbols.classes.length} classes`
+        });
+        
+        // Generate code documentation
+        const codeDoc = generateCodeDoc(parsed, fileName);
+        const docPath = path.join(wikiDir, 'summaries', `${path.parse(fileName).name}.md`);
+        await fs.writeFile(docPath, codeDoc);
+        console.log(`  ✓ Code documentation created`);
+        addProcessingLog(`Code documentation created for ${fileName}`);
+        
+        // Extract concepts from code symbols
+        const concepts = extractCodeConcepts(parsed);
+        for (const concept of concepts) {
+          // Add concept to graph
+          await graph.addConcept(concept.slug, concept);
+          
+          // Link concept to document in graph
+          await graph.linkConceptToDocument(concept.slug, fileName, concept.confidence);
+          
+          // Create concept markdown file
+          const conceptPath = path.join(wikiDir, 'concepts', `${concept.slug}.md`);
+          await updateConceptPage(conceptPath, concept, fileName);
+        }
+        
+        // Add dependencies to graph
+        if (parsed.dependencies) {
+          for (const dep of parsed.dependencies) {
+            await graph.addDependency(fileName, dep);
+          }
+        }
+        
+        console.log(`  ✓ Concepts extracted: ${concepts.length}`);
+        addProcessingLog(`Extracted ${concepts.length} concepts from ${fileName}`);
+        
+        // Mark as processed
+        await markProcessed(filePath, concepts, codeDoc);
+        
+        // Update processed count
+        const status = getProcessingStatus();
+        updateProcessingStatus({
+          processedFiles: (status.processedFiles || 0) + 1
+        });
+        return;
+      }
+    } catch (error) {
+      console.log(`  ⚠️  Code parsing failed, falling back to text extraction`);
+      addProcessingLog(`Code parsing failed for ${fileName}: ${error.message}`);
+    }
+  }
+
+  // Extract text from file (fallback for non-code or failed code parsing)
   let content;
   try {
     content = await extractText(filePath);
@@ -131,6 +202,9 @@ async function processFile(filePath, wikiDir) {
   let summary = null;
   let concepts = [];
 
+  // Get knowledge graph
+  const graph = getKnowledgeGraph();
+
   // Generate summary
   if (config.processing.autoSummarize) {
     try {
@@ -138,6 +212,14 @@ async function processFile(filePath, wikiDir) {
       summary = await generateSummary(fileName, content);
       const summaryPath = path.join(wikiDir, 'summaries', `${path.parse(fileName).name}.md`);
       await fs.writeFile(summaryPath, summary);
+      
+      // Add document to graph
+      await graph.addDocument(fileName, {
+        created: new Date().toISOString(),
+        type: 'text',
+        summary: summary.substring(0, 200) // Store first 200 chars as preview
+      });
+      
       console.log(`  ✓ Summary created`);
       addProcessingLog(`Summary created for ${fileName}`);
     } catch (error) {
@@ -152,6 +234,13 @@ async function processFile(filePath, wikiDir) {
       addProcessingLog(`Extracting concepts from ${fileName}...`);
       concepts = await extractConcepts(content);
       for (const concept of concepts) {
+        // Add concept to graph
+        await graph.addConcept(concept.slug, concept);
+        
+        // Link concept to document in graph
+        await graph.linkConceptToDocument(concept.slug, fileName, concept.confidence);
+        
+        // Create concept markdown file
         const conceptPath = path.join(wikiDir, 'concepts', `${concept.slug}.md`);
         await updateConceptPage(conceptPath, concept, fileName);
       }
@@ -171,6 +260,40 @@ async function processFile(filePath, wikiDir) {
   updateProcessingStatus({
     processedFiles: (status.processedFiles || 0) + 1
   });
+}
+
+/**
+ * Extract concepts from parsed code
+ */
+function extractCodeConcepts(parsed) {
+  const concepts = [];
+  const { symbols } = parsed;
+  
+  // Extract function concepts
+  symbols.functions.forEach(fn => {
+    concepts.push({
+      name: fn.name,
+      slug: fn.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      definition: `Function: ${fn.name}(${fn.params.join(', ')})`,
+      importance: `Code function defined at line ${fn.line}`,
+      source: 'EXTRACTED',
+      confidence: 1.0
+    });
+  });
+  
+  // Extract class concepts
+  symbols.classes.forEach(cls => {
+    concepts.push({
+      name: cls.name,
+      slug: cls.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      definition: `Class: ${cls.name} with ${cls.methods.length} methods`,
+      importance: `Code class defined at line ${cls.line}`,
+      source: 'EXTRACTED',
+      confidence: 1.0
+    });
+  });
+  
+  return concepts;
 }
 
 /**
